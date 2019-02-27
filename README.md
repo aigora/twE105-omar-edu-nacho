@@ -7,12 +7,12 @@ Haremos un submenú para elegir dichos juegos.
 
 ## Integrantes del equipo
 
-Omar Elshami Ahmed - @oelshami
-Eduardo Albelda Reliegos - @dudualbelda07
-Ignacio Cartes Guilarte - @ignaciocartes99
+* Omar Elshami Ahmed - @oelshami
+* Eduardo Albelda Reliegos - @dudualbelda07
+* Ignacio Cartes Guilarte - @ignaciocartes99
 
 ## Objetivos del trabajo
 
 Lista de los objetivos que se persiguen con el trabajo propuesto.
-- Crear un proyecto en C donde podamos proyectar lo aprendido en clase, aplicandolo a la consola descrita anteriormente.
-- Intentar crear un medio interactivo con el que, además de aprender con él, el usuario pase un buen rato.
+* Crear un proyecto en C donde podamos proyectar lo aprendido en clase, aplicandolo a la consola descrita anteriormente.
+* Intentar crear un medio interactivo con el que, además de aprender con él, el usuario pase un buen rato.
