@@ -2,8 +2,9 @@
 
 
 Nuestro proyecto se basa en una videoconsola con algunos juegos clásicos como: Buscaminas, Hundir la Flota, Ahorcado, Tres En Raya.
-Dependiendo de la dificultad del proyecto según lo vayamos desarrollando agregaremos o modificaremos algunos juegos.
-Haremos un submenú para elegir dichos juegos.
+Desarrollaremos varios juegos para nuestra consola.
+Crearemos un menú donde se podrán seleccionar cada uno de estos juegos.
+
 
 ## Integrantes del equipo
 
