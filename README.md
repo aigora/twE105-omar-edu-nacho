@@ -1,5 +1,5 @@
-# Título del trabajo
-Gaming Entertaining Center (GEC)
+# Gaming Entertaining Center (GEC)
+
 
 Nuestro proyecto se basa en una videoconsola con algunos juegos clásicos como: Buscaminas, Hundir la Flota, Ahorcado, Tres En Raya.
 Dependiendo de la dificultad del proyecto según lo vayamos desarrollando agregaremos o modificaremos algunos juegos.
