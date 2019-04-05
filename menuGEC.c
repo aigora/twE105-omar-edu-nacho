@@ -1,43 +1,39 @@
 #include <stdio.h>
-#include <stdlib.h>
-
 void main(){
-		int opcion;
-	printf("Bienvenido a la Gaming Entertainment Center (GEC)\n");
-	
-printf("1. El Laberinto\n");
-	printf("2. Ahorcado\n");
-	printf("3. Undir la flota\n");
-	
-	printf("Elige un juego para empezar: ");
-	scanf("%i", &opcion);
 
-	printf("1. El Laberinto\n");
-	printf("2. Ahorcado\n");
-	printf("3. Undir la flota\n");
+	char opcion;
+	system("COLOR 04");
+	printf("Bienvenido a la Gaming Entertainment Center (GEC)\n");
+	printf("Elige un juego para empezar:\n");
 	
-	
+	printf("a. El Laberinto\n");
+	printf("b. Ahorcado\n");
+	printf("c. Hundir la flota\n");
+	scanf("%c", &opcion);
+
 	switch(opcion){
-		
-		case '1': 
+
+		case 'a': 
+		case 'A':
+			
 		system("cls");
 		printf("Bienvenido a El Laberinto\n");
 		break;
-		
-		case '2':
+
+		case 'b':
+		case 'B':
 		system("cls");
 		printf("Bienvenido a Ahorcado\n");
 		break;
-		
-		case '3': 
+
+	
+		case 'c': 
+		case 'C':
 		system("cls");
 		printf("Bienvenido a Undir la flota\n");
 		break;
+
 		default:
 		printf("Opcion incorrecta\n");
+
 	}
-	
-	
-	
-	
-}
