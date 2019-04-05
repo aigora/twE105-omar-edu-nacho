@@ -1,4 +1,4 @@
-# Gaming Entertaining Center (GEC)
+# Gaming Entertainment Center (GEC)
 
 
 Nuestro proyecto se basa en una videoconsola con algunos juegos clásicos como: Buscaminas, Hundir la Flota, Ahorcado, Tres En Raya.
