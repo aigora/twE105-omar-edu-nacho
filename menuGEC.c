@@ -30,7 +30,7 @@ void main(){
 		case 'c': 
 		case 'C':
 		system("cls");
-		printf("Bienvenido a Undir la flota\n");
+		printf("Bienvenido a Hundir la flota\n");
 		break;
 
 		default:
