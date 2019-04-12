@@ -8,25 +8,27 @@ void comprobar(int M[N][N],int xi,int yi,int xf,int yf,int vector_x[],int vector
 int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posición está en los vectores (v_x,v_y)
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]);
 void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
-void jugar(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
+int jugar(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
+int condiciones(int M[N][N],int,int);
+
 int main (){
 	empezar_de_nuevo:
 	system("color f0");
-	int coord_x,coord_y,x_ini,y_ini,vector_x[L]={0},vector_y[L]={0},i,mapa[N][N]={
-	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0, 0, 0},
-	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0,-1,-1, 0, 0, 0, 0, 0,-1,-1, 0},
-	{-1,-1,-1,-1,-1, 0,-1, 0,-1, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0, 0, 0, 0,-1, 0, 0,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
+	int coord_x,coord_y,x_ini,y_ini,vector_x[L]={0},vector_y[L]={0},i,pasos,mapa[N][N]={
+	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1,-1,-1, 0, 0, 0},
+	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0,-1,-1, 0},
+	{-1,-1,-1,-1,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
 	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{-1,-1,-1,-1, 0,-1, 0, 0,-1, 0, 0,-1,-1,-1,-1, 0,-1, 0,-1, 0},
+	{-1,-1,-1,-1, 0,-1,-1, 0,-1, 0, 0,-1,-1,-1,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0,-1, 0, 0, 0, 0,-1,-1, 0, 0, 0, 0,-1, 0,-1, 0,-1, 0},
 	{-1,-1,-1,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0, 0, 0,-1, 0,-1, 0},
-	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0,-1, 0,-1, 0,-1, 0},
-	{-1,-1,-1,-1,-1, 0,-1, 0,-1, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0,-1,-1,-1,-1, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0},
+	{-1,-1, 0, 0, 0, 0, 0, 0,-1, 0, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0},
+	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0, 0, 0, 0,-1, 0, 0,-1,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
 	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0,-1,-1, 0,-1, 0, 0, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
 	{-1,-1,-1,-1, 0,-1, 0, 0,-1, 0,-1,-1, 0, 0,-1, 0,-1, 0,-1, 0},
@@ -43,13 +45,16 @@ int main (){
 	scanf(" %i %i",&coord_x,&coord_y);
 	printf("\n\tTe atreves con el laberinto? \n\n\tSi quieres jugar pulsa 1 y si tienes miedo pulsa cualquier otro caracter: ");
 	scanf(" %i",&Pregunta_jugar);
+	x_ini--;y_ini--;coord_x--;coord_y--;
+	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
+	mapa[coord_x][coord_y]=0;
 	if(Pregunta_jugar==1){
 		t0=clock();
-		jugar(mapa,x_ini,y_ini,coord_x,coord_y);
+		pasos=jugar(mapa,x_ini,y_ini,coord_x,coord_y);
 		t1=clock();
 		time_usuario=(t1-t0)/(float)CLOCKS_PER_SEC;
 		system("cls");
-		printf("\n\tHas tardado %0.3f segundos",time_usuario);
+		printf("\n\tHas tardado %0.3f segundos y lo has hecho en %i pasos",time_usuario,pasos);
 		printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
 		getch();	
 		printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
@@ -59,8 +64,6 @@ int main (){
 	printf("\n\tVeo que no te atraves\n\n\tBueno ya lo resuelvo yo por ti");
 	getch();
 	}
-	mapa[x_ini][y_ini]=1;
-	
 	t2=clock();
 	avanzar_4_sentidos(mapa,coord_x,coord_y,x_ini,y_ini);
 	t3=clock();
@@ -94,29 +97,38 @@ int main (){
 	return 0;
 }
 	
+int condiciones(int M[N][N],int xi,int yi){//Comprueba que en esa posicion no hay pared(-1) y no se sale de las dimensiones de la matriz
+	if(xi>=0&&xi<N&&yi<N&&yi>=0&&M[xi][yi]!=-1)
+		return 1;
+	else 
+		return 0;
+}
 
 void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial){// Función recursiva que repite una rama hasta que choque con una pared(-1), se salga de la matriz, haya una rama más corta que llega a la meta o se corte con una rama más corta para llegar a la meta
 
-	if(M[x][y]==0||M[x_inicial][y_inicial]+1<M[x][y]){ //para que siga por esa rama, se tiene que no haber llegado a la meta o que vaya por un numero inferior al que hay en la meta
+	if(M[x][y]==0||M[x_inicial][y_inicial]+1<M[x][y]){ //para que siga por esa rama, no se tiene que haber llegado a la meta o que vaya por un numero inferior al que hay en la meta
 	
-		if(x_inicial-1>=0&&x_inicial-1<N&&y_inicial<N&&y_inicial>=0&&M[x_inicial-1][y_inicial]>=0&&(M[x_inicial-1][y_inicial]==0||M[x_inicial][y_inicial]+1<M[x_inicial-1][y_inicial])){ // no avanzar si hay un menos 1(pared) o si se va a salir de la matriz o si hay un numero inferior en la casilla que va a ocupar
-			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una casi hacía abajo y suma uno al numero de pasos que se uso para llegar a la anterior
+		if(condiciones(M,x_inicial-1,y_inicial)&&(M[x_inicial-1][y_inicial]==0||M[x_inicial][y_inicial]+1<M[x_inicial-1][y_inicial])){ // no avanzar si no se cumple la función condiciones o si hay un numero inferior en la casilla que va a ocupar
+			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una hacía abajo y suma uno al numero de pasos que se uso para llegar a la anterior
 			avanzar_4_sentidos(M,x,y,x_inicial-1,y_inicial);
 		}
-		if(x_inicial+1>=0&&x_inicial+1<N&&y_inicial<N&&y_inicial>=0&&M[x_inicial+1][y_inicial]>=0&&(M[x_inicial+1][y_inicial]==0||M[x_inicial][y_inicial]+1<M[x_inicial+1][y_inicial])){
+		if(condiciones(M,x_inicial+1,y_inicial)&&(M[x_inicial+1][y_inicial]==0||M[x_inicial][y_inicial]+1<M[x_inicial+1][y_inicial])){
 			M[x_inicial+1][y_inicial]=M[x_inicial][y_inicial]+1;
 			avanzar_4_sentidos(M,x,y,x_inicial+1,y_inicial);
 		}
-		if(x_inicial>=0&&x_inicial<N&&y_inicial-1<N&&y_inicial-1>=0&&M[x_inicial][y_inicial-1]>=0&&(M[x_inicial][y_inicial-1]==0||M[x_inicial][y_inicial]+1<M[x_inicial][y_inicial-1])){
+		if(condiciones(M,x_inicial,y_inicial-1)&&(M[x_inicial][y_inicial-1]==0||M[x_inicial][y_inicial]+1<M[x_inicial][y_inicial-1])){
 			M[x_inicial][y_inicial-1]=M[x_inicial][y_inicial]+1;		
 			avanzar_4_sentidos(M,x,y,x_inicial,y_inicial-1);
 		}
-		if(x_inicial>=0&&x_inicial<N&&y_inicial+1<N&&y_inicial+1>=0&&M[x_inicial][y_inicial+1]>=0&&(M[x_inicial][y_inicial+1]==0||M[x_inicial][y_inicial]+1<M[x_inicial][y_inicial+1])){
+		if(condiciones(M,x_inicial,y_inicial+1)&&(M[x_inicial][y_inicial+1]==0||M[x_inicial][y_inicial]+1<M[x_inicial][y_inicial+1])){
 			M[x_inicial][y_inicial+1]=M[x_inicial][y_inicial]+1;		
 			avanzar_4_sentidos(M,x,y,x_inicial,y_inicial+1);
 		}		
 	}	
-	system("cls");//borrar lo anteriro y imprime matriz
+	else{
+		system("cls");//borrar lo anteriro y imprime matriz
+		 imprime_matriz(M);
+	}
 
 }
 
@@ -124,21 +136,24 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial){// 
 void imprime_matriz(int M[N][N]){
 	int i, j;
 	printf("\t");
-	for(i=0;i<N;i++){
+	for(i=1;i<=N;i++){
 		if(i<10)
 			printf(" ");//Se desalineban los números de las columnas al ser de 2 digitos, así se arregla
 		printf(" %i ",i);
 	}
 	printf("\n\n\n");
 	for(i = 0; i < N; i++) {
-		printf("%i\t",i);
+		printf("%i\t",i+1);
 		for(j = 0; j < N; j++){
 			if(M[i][j]==-1)
 				printf("  X ");
 			else{
 				 if(M[i][j]>=0&&M[i][j]<10)
 					printf(" ");//para que los numeros de un digito ocupen lo mismo que los de 2
-				printf(" %d ", M[i][j]);
+					if(M[i][j]==0)
+						printf(" . ");
+					else
+						printf(" %d ", M[i][j]);
 				}
 		}
 		printf("\n");
@@ -153,15 +168,15 @@ void comprobar(int M[N][N],int xi,int yi,int xf, int yf,int vector_x[L],int vect
 			v_x[i]=vector_x[i];
 			v_y[i]=vector_y[i];
 		}
-			}
+	}
 	else{
 		contador++;
-		if(M[xi+1][yi]==M[xi][yi]+1){//Comprobar si el número de arriba vale 1 más que el valor de esa posición
+		if(M[xi+1][yi]==M[xi][yi]+1){//Comprobar si el número de abajo vale 1 más que el valor de esa posición
 			vector_x[contador]=xi+1;
 			vector_y[contador]=yi;
 			comprobar(M,xi+1,yi,xf,yf,vector_x,vector_y,contador,v_x,v_y);//sigue comprobando en dicha posición (función recuersiva)
 		}
-		if(M[xi-1][yi]==M[xi][yi]+1){//abajo
+		if(M[xi-1][yi]==M[xi][yi]+1){//arriba
 			vector_x[contador]=xi-1;
 			vector_y[contador]=yi;
 			comprobar(M,xi-1,yi,xf,yf,vector_x,vector_y,contador,v_x,v_y);
@@ -223,11 +238,12 @@ void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 	}	
 }
 
-void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
+int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 	system("cls");
 	printf("\n\tIntenta llegar por el camino mas corto:\n\n");
 	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
 	imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+	int pasos=0;
 	char avanzar;
 	while(xi!=xf||yi!=yf){//Mientras no se alcanzo la meta
 		avanzar=getch();
@@ -237,6 +253,7 @@ void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					xi--;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					pasos++;
 				}
 			break;
 			case 's'://abajo
@@ -244,6 +261,7 @@ void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					xi++;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					pasos++;
 				}
 			break;
 			case 'd'://derecha
@@ -251,6 +269,7 @@ void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					yi++;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					pasos++;
 				}
 			break;
 			case 'a'://izquierda
@@ -258,6 +277,7 @@ void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					yi--;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					pasos++;
 				}
 			break;
 			default:
@@ -265,6 +285,7 @@ void jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 		}
 		
 	}
+	return pasos;
 }
 
 void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){
@@ -280,7 +301,7 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){
 			else if(i==xf&&j==yf)// dibuja M en la meta
 				printf("  M ");
 			else
-				printf("  . ");		
+				printf("  . ");	
 			}
 		printf("\n");
 	}
