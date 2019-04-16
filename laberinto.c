@@ -37,7 +37,7 @@ int main (){
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
 	};
 	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
-	float t0,t1,t2,t3,time_usuario,time_maquina;
+	double t0,t1,t2,t3,time_usuario,time_maquina,t4,t5,tiempo;
 	imprime_matriz(mapa);
 	printf("\n\tcoordenadas de la posicion inicial x0 y0: ");
 	scanf("%i %i",&x_ini,&y_ini);
@@ -52,9 +52,9 @@ int main (){
 		t0=clock();
 		pasos=jugar(mapa,x_ini,y_ini,coord_x,coord_y);
 		t1=clock();
-		time_usuario=(t1-t0)/(float)CLOCKS_PER_SEC;
+		time_usuario=(t1-t0)/(double)CLOCKS_PER_SEC;
 		system("cls");
-		printf("\n\tHas tardado %0.3f segundos y lo has hecho en %i pasos",time_usuario,pasos);
+		printf("\n\tHas tardado %lf segundos y lo has hecho en %i pasos",time_usuario,pasos);
 		printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
 		getch();	
 		printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
@@ -66,8 +66,8 @@ int main (){
 	}
 	t2=clock();
 	avanzar_4_sentidos(mapa,coord_x,coord_y,x_ini,y_ini);
-	t3=clock();
-	time_maquina=(t3-t2)/(float)CLOCKS_PER_SEC;
+	t3=t4=clock();
+	time_maquina=(t3-t2)/(double)CLOCKS_PER_SEC;
 	
 	printf("\n\n");
 	if(mapa[coord_x][coord_y]!=0){
@@ -77,11 +77,14 @@ int main (){
 	comprobar(mapa,x_ini,y_ini,coord_x,coord_y,vector_x,vector_y,0,v_x,v_y);
 	for(i=mapa[coord_x][coord_y];i<L;i++)//que sea 0 todos lo valores que no nos interesan (No se porque en algunas posiciones muy concretas algunas posiciones toman valores raros)
 		v_x[i]=v_y[i]=0;
-	printf("\n\tNo es por nada, pero solo he tardado %0.3f segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
+	printf("\n\tNo es por nada, pero solo he tardado %0.15lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
 /*	for(i=0;i<L;i++)
 		printf("(%i,%i),",v_x[i],v_y[i]);
 	printf("\n");*/
 	imprime_matriz_con_flechas(mapa,v_x,v_y);
+	t5=clock();
+	tiempo=(t5-t4)/(float)CLOCKS_PER_SEC;
+	printf("\n%f segundos",tiempo);
 	}
 	else // si la posición (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
 		printf("\tNo se llego a la meta\n");
@@ -125,10 +128,10 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial){// 
 			avanzar_4_sentidos(M,x,y,x_inicial,y_inicial+1);
 		}		
 	}	
-	else{
-		system("cls");//borrar lo anteriro y imprime matriz
-		 imprime_matriz(M);
-	}
+//	else{
+//		system("cls");//borrar lo anteriro y imprime matriz
+//		 imprime_matriz(M);
+//	}
 
 }
 
@@ -196,7 +199,7 @@ void comprobar(int M[N][N],int xi,int yi,int xf, int yf,int vector_x[L],int vect
 int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta){
 	int i,j=2;
 	*resta=0;
-	if(v_x[0]==0&&v_x[1]==0&&v_y[0]==0&&v_y[1]==0){// Si los vectores v_x y v_y aun están vacios que devuelva 0
+	if(v_x[0]==0&&v_x[1]==0&&v_y[0]==0&&v_y[1]==0){// Si los vectores v_x y v_y aun están vacios que devuelva 2
 	return 2;
 	}
 	else{
