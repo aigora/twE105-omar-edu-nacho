@@ -28,7 +28,7 @@ int main(){
 	for(fila=0;fila<D;fila++){//Pone bombas de forma aleatoria
 		for(columna=0;columna<D;columna++){
 			random = rand() % 10 + 1;
-			if(random<2){//Va recorriendo la matriz y generando números random, si son menores que 5 pone una bomba(-1) en esa posición
+			if(random<3){//Va recorriendo la matriz y generando números random, si son menores que 5 pone una bomba(-1) en esa posición
 				Mapa[fila][columna]=-1;
 				bombas++;
 			}
