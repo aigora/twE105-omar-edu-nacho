@@ -2,6 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 #define D 10//dimensión de la matriz
+
 typedef struct{
 	int x,y;
 	char letra;
@@ -17,23 +18,29 @@ void agregar(punto pts[D*D],int num_pts,int ,int y);//Le añade al vector puntos 
 int esta_en_vector(punto puntos[D*D],int,int,int);//pregunta
 
 int main(){
+	empezar:
 	system("color f9");
 	char letra,letras[D*D];
-	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta;
+	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel;
 	float t1,t2,tiempo;
-	punto puntos[D*D]={0,0,0};//vector de puntos
-	//Genera semilla aleatoria
+	punto puntos[D*D]={0,0,0};//vector de la estructura punto
 	srand(time(NULL));
-	//Numero aleatorio entre 1 y 100
+	printf("Pon 1, 2 o 3 para eligir el nivel ");
+	scanf("%i",&nivel);
+	if(nivel==1)nivel=2;
+	else if(nivel==2)nivel=4;
+	else if(nivel==3)nivel=5;
+	else goto empezar;
 	for(fila=0;fila<D;fila++){//Pone bombas de forma aleatoria
 		for(columna=0;columna<D;columna++){
 			random = rand() % 10 + 1;
-			if(random<3){//Va recorriendo la matriz y generando números random, si son menores que 5 pone una bomba(-1) en esa posición
+			if(random<nivel){//Va recorriendo la matriz y generando números random, si son menores que 5 pone una bomba(-1) en esa posición
 				Mapa[fila][columna]=-1;
 				bombas++;
 			}
 		}
 	}
+	system("cls");
 	crear_buscaminas(Mapa);
 	jugar(Mapa,puntos,0);
 	printf("\nHay %i bombas\n\nHay que poner las coordenadas y despues A o O\n\n-A es para ver lo que hay en esa casilla \n\n-O para poner bandera\n\nEjem: 1 1 A\n\n",bombas);
@@ -58,7 +65,7 @@ int main(){
 			system("cls");
 			imprime_matriz(Mapa);
 			printf("\nHas perdido");
-			return 1;
+			break;
 		}
 		else{
 			Pregunta_esta=esta_en_vector(puntos,num_puntos,x,y);
@@ -78,14 +85,20 @@ int main(){
 			if(banderas_usadas==-1){
 				t2=clock();
 				tiempo=(t2-t1)/(float)CLOCKS_PER_SEC;
-				printf("\nHAS GANADO y has tardado %0.2f segundos",tiempo);
-				return 0;			
+				printf("\nHAS GANADO y has tardado %i minutos y %i segundos",(int)tiempo/60,(int)tiempo%60);//pone el tiempo en minutos y segundos
+				break;	
 			}
 			printf("\nTe quedan %i banderas por usar\n",bombas-banderas_usadas);
 		}
 	}while(1);
+	printf("\nQuieres jugar de nuevo? Pulsa 1: ");
+	if(getch()=='1'){
+		system("cls");
+		goto empezar;
+	}
 	return 0;
 }
+
 void imprime_matriz(int M[D][D]){
 	int i,j;
 	printf(" \t");
@@ -106,6 +119,7 @@ void imprime_matriz(int M[D][D]){
 		printf("\n");	
 	}
 }
+
 void crear_buscaminas(int M[D][D]){
 	int i,j;
 	for(i=0;i<D;++i){
@@ -115,6 +129,7 @@ void crear_buscaminas(int M[D][D]){
 		}
 	}
 }
+
 bombas_alrededor(int M[D][D],int x,int y){//suma 1 a la variable bombas si hay una bomba tocando(aunque se por las esquinas) a la posición inicial
 	int bombas=0,i,j;
 	for(i=-1;i<=1;i++)
@@ -123,6 +138,7 @@ bombas_alrededor(int M[D][D],int x,int y){//suma 1 a la variable bombas si hay u
 				bombas++;
 	return bombas;
 }
+
 int dentro_matriz(int M[D][D],int x,int y){
 	if(x>=0&&x<D&&y>=0&&y<D)// si está dentro de la matriz que devuelva 1, sino que devuelva 0
 		return 1;
@@ -165,6 +181,7 @@ int jugar(int M[D][D],punto puntos[D*D],int num_puntos){
 		return -1;//-1 es ganar la partida
 	return banderas;
 }
+
 void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y){
 	int i,j;
 	for(i=-1;i<=1;i++)
@@ -175,13 +192,14 @@ void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y){
 				if(M[x+i][y+j]==0)
 					Expandir(M,pts,num_pts,x+i,y+j);
 			}
-
 }
+
 void agregar(punto pts[D*D],int num_pts,int x,int y){
 	pts[num_pts].x=x;
 	pts[num_pts].y=y;
 	pts[num_pts].letra='A';
 }
+
 int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y){//devuelve -1, si no está en el vector y si esta devuelve el número de la posición
 	int i;
 	for(i=0;i<num_ptos;i++)//para comprobar que el punto ya está y solo se le cambia la letra (de A a O, o de O a A)
@@ -189,3 +207,4 @@ int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y){//devuelve -1, si
 			return i;
 	return -1;
 }
+
