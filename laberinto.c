@@ -2,23 +2,28 @@
 #include <time.h>
 #define N 20 //dimension matriz cuadrada
 #define L N*N //dimension vectores
+#define D 20//Dimension del vector de usuarios (esctructura)
 typedef struct{
 	int x,y;
 }punto;
+typedef struct{
+	char nombre[30];
+	int punt;
+}usuario;
 void avanzar_4_sentidos(int M[N][N],int coord_x,int coord_y,int,int,punto punto_camino[L],int v_x[L],int v_y[L],int contador);
 void imprime_matriz(int M[N][N]);
-int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posición está en los vectores (v_x,v_y)
+int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posici?n est? en los vectores (v_x,v_y)
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]);
 void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
 int jugar(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
 int condiciones(int M[N][N],int,int,int,int);
 void Copiar_vector(int v1[L],int v2[L]);
-
+void ordenar_puntuaciones(usuario lista_punt[D]);
 int main (){
 	empezar_de_nuevo:
 	system("color f0");
 	punto puntos_camino[L];
-	int coord_x,coord_y,x_ini,y_ini,i,pasos,mapa[N][N]={
+	int coord_x,coord_y,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,mapa[N][N]={
 	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1,-1,-1, 0, 0, 0},
 	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0,-1,-1, 0},
 	{-1,-1,-1,-1,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
@@ -40,8 +45,15 @@ int main (){
 	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
 	};
-	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
-	double t0,t1,t2,t3,time_usuario,time_maquina,t4,t5,tiempo;
+	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar,Puntuacion;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
+	double ti,tf,time_usuario,time_maquina,tiempo_imprimir;
+	usuario lista_punt[D]={{"hola",0}};
+	FILE *agregar_archivo=fopen("puntuacion_laberinto.txt","a"),*leer_archivo=fopen("puntuacion_laberinto.txt","r");
+	if(agregar_archivo==NULL||leer_archivo==NULL){
+		printf("\n\terror");
+		return 1;
+	}
+	char Nickname[30];
 	imprime_matriz(mapa);
 	printf("\n\tcoordenadas de la posicion inicial x0 y0: ");
 	scanf("%i %i",&x_ini,&y_ini);
@@ -53,65 +65,87 @@ int main (){
 	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
 	mapa[coord_x][coord_y]=0;
 	if(Pregunta_jugar==1){
-		t0=clock();
-		pasos=jugar(mapa,x_ini,y_ini,coord_x,coord_y);
-		t1=clock();
-		time_usuario=(t1-t0)/(double)CLOCKS_PER_SEC;
+		ti=clock();
+		pasos_usuario=jugar(mapa,x_ini,y_ini,coord_x,coord_y);
+		tf=clock();
+		time_usuario=(tf-ti)/(double)CLOCKS_PER_SEC;
 		system("cls");
-		printf("\n\tHas tardado %lf segundos y lo has hecho en %i pasos",time_usuario,pasos);
+		printf("\n\tHas tardado %lf segundos y lo has hecho en %i pasos",time_usuario,pasos_usuario);
 		printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
 		getch();	
 		printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
 		getch();
 	}
 	else{
-	printf("\n\tVeo que no te atraves\n\n\tBueno ya lo resuelvo yo por ti");
-	getch();
+		printf("\n\tVeo que no te atraves\n\n\tBueno ya lo resuelvo yo por ti");
+		getch();
 	}
 	puntos_camino[0].x=x_ini;
 	puntos_camino[0].y=y_ini;
-	t2=clock();
+	ti=clock();
 	avanzar_4_sentidos(mapa,coord_x,coord_y,x_ini,y_ini,puntos_camino,v_x,v_y,1);
-	t3=t4=clock();
-	time_maquina=(t3-t2)/(double)CLOCKS_PER_SEC;
+	tf=clock();
+	time_maquina=(tf-ti)/(double)CLOCKS_PER_SEC;
+	ti=clock();
 	printf("\n\n");
-	if(mapa[coord_x][coord_y]!=0){
-	printf("\tEl camino mas corto es de %i pasos\n",mapa[coord_x][coord_y]-1);	
-	printf("\n\tNo es por nada, pero solo he tardado %0.15lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
-	imprime_matriz_con_flechas(mapa,v_x,v_y);
-	t5=clock();
-	tiempo=(t5-t4)/(float)CLOCKS_PER_SEC;
-	printf("\n%f segundos",tiempo);
+	pasos_maquina=mapa[coord_x][coord_y]-1;
+	if(pasos_maquina!=0){//Es decir, se ha llegado a la meta
+		system("cls");
+		printf("\n\tEl camino mas corto es de %i pasos\n",pasos_maquina);	
+		printf("\n\tNo es por nada, pero solo he tardado %0.15lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
+		imprime_matriz_con_flechas(mapa,v_x,v_y);
+		tf=clock();
+		tiempo_imprimir=(tf-ti)/(float)CLOCKS_PER_SEC;
+		printf("\n\tSe tardo %f segundos en pintar el resultado",tiempo_imprimir);
 	}
-	else // si la posición (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
+	else // si la posici?n (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
 		printf("\tNo se llego a la meta\n");
-	
-	printf("\n\n\tQuieres seguir jugado? Pulsa 1:");
-	scanf("%i",&Pregunta_jugar);
-	if(Pregunta_jugar==1){
+	if(pasos_usuario!=0){//Es decir, ha eligido jugar
+		Puntuacion=100000/((pasos_usuario+1-pasos_maquina)*(int)time_usuario);
+		if(pasos_usuario==pasos_maquina)
+			Puntuacion+=5000;//Bonus si se sigue el camino más corto
+		printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partdia pulsa 1: ",Puntuacion);
+		if(getch()=='1'){
+			printf("\n\n\tPon Nombre: ");
+			scanf(" %[^\n]",Nickname);
+			fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
+			i=0;
+			while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+				i++;
+			ordenar_puntuaciones(lista_punt);
+			system("cls");
+			//printf("%s %i",lista_punt[0].nombre,lista_punt[0].punt);
+			printf("\t   Nombre \t Puntuacion");
+			for(i=0;lista_punt[i].punt!=0&&i<15;i++)
+				printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
+		}
+	}
+	printf("\n\tQuieres seguir jugado? Pulsa 1:");
+	if(getch()=='1'){
 		system("cls");
 		goto empezar_de_nuevo;
 	}
-	else
-		printf("Hasta la proxima");
+	printf("\n\n\tHasta la proxima");
+	fclose(leer_archivo);
+	fclose(agregar_archivo);
 	return 0;
 }
 	
-int condiciones(int M[N][N],int xi,int yi,int xf,int yf){//Para que devuelva 1 no tiene que haber pared(-1) en la posición a la que se mueve y no se sale de las dimensiones de la matriz
-	if(xf>=0&&xf<N&&yf<N&&yf>=0&&M[xf][yf]!=-1 && (M[xf][yf]==0 || M[xi][yi]+1<M[xf][yf]))//Y también en la posición en la que se va a avanzar tiene que haber un cero o que se va a mejorar al menos por uno al número que ya hay allí
+int condiciones(int M[N][N],int xi,int yi,int xf,int yf){//Para que devuelva 1 no tiene que haber pared(-1) en la posici?n a la que se mueve y no se sale de las dimensiones de la matriz
+	if(xf>=0&&xf<N&&yf<N&&yf>=0&&M[xf][yf]!=-1 && (M[xf][yf]==0 || M[xi][yi]+1<M[xf][yf]))//Y tambi?n en la posici?n en la que se va a avanzar tiene que haber un cero o que se va a mejorar al menos por uno al n?mero que ya hay all?
 		return 1;
 	else 
 		return 0;
 }
 
-void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punto puntos_camino[L],int v_x[L],int v_y[L],int contador){// Función recursiva que repite una rama hasta que choque con una pared(-1), se salga de la matriz, haya una rama más corta que llega a la meta o se corte con una rama más corta para llegar a la meta
+void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punto puntos_camino[L],int v_x[L],int v_y[L],int contador){// Funci?n recursiva que repite una rama hasta que choque con una pared(-1), se salga de la matriz, haya una rama m?s corta que llega a la meta o se corte con una rama m?s corta para llegar a la meta
 
 	if(M[x][y]==0||M[x_inicial][y_inicial]+1<M[x][y]){ //para que siga por esa rama, no se tiene que haber llegado a la meta o que vaya por un numero inferior al que hay en la meta
 	
 		if(condiciones(M,x_inicial,y_inicial,x_inicial-1,y_inicial)){
-			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una hacía abajo y suma uno al numero de pasos que se uso para llegar a la anterior
+			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una hac?a abajo y suma uno al numero de pasos que se uso para llegar a la anterior
 			puntos_camino[contador].x=x_inicial-1;
-			puntos_camino[contador].y=y_inicial;//Las posiciones por las que se expande se guardan en vector_x y vector_y, en la posición contador
+			puntos_camino[contador].y=y_inicial;//Las posiciones por las que se expande se guardan en vector_x y vector_y, en la posici?n contador
 			avanzar_4_sentidos(M,x,y,x_inicial-1,y_inicial, puntos_camino, v_x, v_y,contador+1);
 		}
 		if(condiciones(M,x_inicial,y_inicial,x_inicial+1,y_inicial)){
@@ -133,9 +167,9 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punt
 			avanzar_4_sentidos(M,x,y,x_inicial,y_inicial+1, puntos_camino, v_x, v_y,contador+1);
 		}		
 	}	
-	if(x_inicial==x&&y_inicial==y){//cuando está en la meta, guarda el camino recorrido en v_x y v_y, el programa está hecho de forma que solo puede llegar a la meta, mejorando el camino anterior
-		int i;//Por lo que se acabará guardando el camino más corto
-		for(i=contador;i<L;i++)//Antes de pasar el camino a v_x y v_y, se limpia lo que se guardó en las siguientes posiciones a la que se llego a la meta 
+	if(x_inicial==x&&y_inicial==y){//cuando est? en la meta, guarda el camino recorrido en v_x y v_y, el programa est? hecho de forma que solo puede llegar a la meta, mejorando el camino anterior
+		int i;//Por lo que se acabar? guardando el camino m?s corto
+		for(i=contador;i<L;i++)//Antes de pasar el camino a v_x y v_y, se limpia lo que se guard? en las siguientes posiciones a la que se llego a la meta 
 			puntos_camino[i].x=puntos_camino[i].y=0;
 		for(i=0;i<L;i++){//Copiando el camio en los vectores v_x y v_y
 			v_x[i]=puntos_camino[i].x;
@@ -149,7 +183,7 @@ void imprime_matriz(int M[N][N]){
 	printf("\t");
 	for(i=1;i<=N;i++){
 		if(i<10)
-			printf(" ");//Se desalineban los números de las columnas al ser de 2 digitos, así se arregla
+			printf(" ");//Se desalineban los n?meros de las columnas al ser de 2 digitos, as? se arregla
 		printf(" %i ",i);
 	}
 	printf("\n\n\n");
@@ -175,7 +209,7 @@ int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta){
 	int i,j=2;
 	*resta=0;
 	for(i=0;i<L;i++){
-		if(v_x[i]==x&&v_y[i]==y){// devuelve 2 si no está esa posición en los vectores y 1,-1 o 0 dependiendo de si se desplaza a la derecha, izquierda o (abajo o arriba) respectivamente
+		if(v_x[i]==x&&v_y[i]==y){// devuelve 2 si no est? esa posici?n en los vectores y 1,-1 o 0 dependiendo de si se desplaza a la derecha, izquierda o (abajo o arriba) respectivamente
 			j=v_y[i]-v_y[i-1];
 			*resta=v_x[i]-v_x[i-1];
 			break;
@@ -183,6 +217,7 @@ int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta){
 	}
 	return j;
 }
+
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 	int i,j,pregunta,resta_arriba=0;
 	for(i=0;i<N;i++){
@@ -215,18 +250,18 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
 	imprime_matriz_jugar(mapa,xi,yi,xf,yf);
 	int pasos=0;
-	char avanzar;
 	while(xi!=xf||yi!=yf){//Mientras no se alcanzo la meta
-		avanzar=getch();
-		switch(avanzar){
+		switch(getch()){//Avanzar
+			case 'W':
 			case 'w'://arriba
-				if(mapa[xi-1][yi]!=-1&&xi-1>=0){//Si no hay menos uno en esa posición (pared) y que no se salga de la matriz
+				if(mapa[xi-1][yi]!=-1&&xi-1>=0){//Si no hay menos uno en esa posici?n (pared) y que no se salga de la matriz
 					xi--;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
 			break;
+			case 'S':
 			case 's'://abajo
 				if(mapa[xi+1][yi]!=-1&&xi+1<=N-1){
 					xi++;
@@ -235,6 +270,7 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					pasos++;
 				}
 			break;
+			case 'D':
 			case 'd'://derecha
 				if(mapa[xi][yi+1]!=-1&&yi+1<=N-1){
 					yi++;
@@ -243,6 +279,7 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 					pasos++;
 				}
 			break;
+			case 'A':
 			case 'a'://izquierda
 				if(mapa[xi][yi-1]!=-1&&yi-1>=0){
 					yi--;
@@ -275,3 +312,16 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){
 		printf("\n");
 	}
 }
+
+void ordenar_puntuaciones(usuario lista_punt[D]){
+	usuario aux;
+	int i,j;
+	for(i=0;lista_punt[i].punt!=0;i++)
+		for(j=i+1;lista_punt[j].punt!=0;j++)
+			if(lista_punt[i].punt<lista_punt[j].punt){
+				aux=lista_punt[i];
+				lista_punt[i]=lista_punt[j];
+				lista_punt[j]=aux;
+			}
+}
+
