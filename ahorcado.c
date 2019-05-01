@@ -80,6 +80,7 @@ system("COLOR 2F");
 void principal(char adivinapalabra[30], char cadena[30]){
 	int intentos=7, fallos=0, i;
 	i=0;
+	cadena[0]='\0';
 	while(1){
 		fallos=ahorcado(adivinapalabra, cadena);
 		intentos-=fallos;
@@ -133,15 +134,11 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		printf("Has ganado");
 		exit(0);
 	}
-	if(ultima_letra_usuario==1){//Si aun el usuario no ha introducido letras
-		Pregunta_fallo=0;
-	}
-	else{	
+
 		for(i=0,Pregunta_fallo=1;adivinapalabra[i]!='\0';i++){
 			if(letrausuario[ultima_letra_usuario-1]==adivinapalabra[i] || letrausuario[ultima_letra_usuario-1]==adivinapalabra[i]-dif)
 				Pregunta_fallo=0;
 		}
-	}
 		return Pregunta_fallo;
 }
 void imprime_ahorcado(int intentos){
