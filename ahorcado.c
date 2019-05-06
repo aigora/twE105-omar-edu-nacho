@@ -131,7 +131,7 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		}
 	}
 	if(ganado==1){
-		printf("Has ganado");
+		printf("\nHAS GANADO!!");
 		exit(0);
 	}
 
@@ -169,7 +169,7 @@ void imprime_ahorcado(int intentos){
 	}
 	if(intentos==1){
 	printf("Te quedan %d intentos para adivinar la pelicula\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
+				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       |  \n|\n|__\n");
 	}
 	if(intentos==0){
 				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
