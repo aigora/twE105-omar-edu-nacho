@@ -48,8 +48,8 @@ int main (){
 	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar,Puntuacion;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
 	double ti,tf,time_usuario,time_maquina,tiempo_imprimir;
 	usuario lista_punt[D]={{"hola",0}};
-	FILE *agregar_archivo=fopen("puntuacion_laberinto.txt","a"),*leer_archivo=fopen("puntuacion_laberinto.txt","r");
-	if(agregar_archivo==NULL||leer_archivo==NULL){
+	FILE *agregar_archivo=fopen("puntuacion_laberinto.txt","a");
+	if(agregar_archivo==NULL/*||leer_archivo==NULL*/){
 		printf("\n\terror");
 		return 1;
 	}
@@ -92,11 +92,23 @@ int main (){
 	if(pasos_maquina!=0){//Es decir, se ha llegado a la meta
 		system("cls");
 		printf("\n\tEl camino mas corto es de %i pasos\n",pasos_maquina);	
-		printf("\n\tNo es por nada, pero solo he tardado %0.15lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
-		imprime_matriz_con_flechas(mapa,v_x,v_y);
+		printf("\n\tNo es por nada, pero solo he tardado %0.5lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
 		tf=clock();
 		tiempo_imprimir=(tf-ti)/(float)CLOCKS_PER_SEC;
-		printf("\n\tSe tardo %f segundos en pintar el resultado",tiempo_imprimir);
+		printf("\n\tSe tardo %f segundos en pintar el resultado\n",tiempo_imprimir);
+		i=0;
+		ti=clock();
+		while(v_x[i-1]!=coord_x||v_y[i-1]!=coord_y){
+			tf=clock();
+			if((tf-ti)/CLOCKS_PER_SEC>0.1){
+				ti=clock();
+				system("cls");
+				imprime_matriz_jugar(mapa,v_x[i],v_y[i],coord_x,coord_y);
+				i++;
+			}
+		}
+		system("cls");
+		imprime_matriz_con_flechas(mapa,v_x,v_y);
 	}
 	else // si la posici?n (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
 		printf("\tNo se llego a la meta\n");
@@ -110,14 +122,16 @@ int main (){
 			scanf(" %[^\n]",Nickname);
 			fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
 			i=0;
+			fclose(agregar_archivo);
+			FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
 			while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
 				i++;
 			ordenar_puntuaciones(lista_punt);
 			system("cls");
-			//printf("%s %i",lista_punt[0].nombre,lista_punt[0].punt);
 			printf("\t   Nombre \t Puntuacion");
 			for(i=0;lista_punt[i].punt!=0&&i<15;i++)
 				printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
+			fclose(leer_archivo);
 		}
 	}
 	printf("\n\tQuieres seguir jugado? Pulsa 1:");
@@ -126,11 +140,9 @@ int main (){
 		goto empezar_de_nuevo;
 	}
 	printf("\n\n\tHasta la proxima");
-	fclose(leer_archivo);
-	fclose(agregar_archivo);
 	return 0;
 }
-	
+
 int condiciones(int M[N][N],int xi,int yi,int xf,int yf){//Para que devuelva 1 no tiene que haber pared(-1) en la posici?n a la que se mueve y no se sale de las dimensiones de la matriz
 	if(xf>=0&&xf<N&&yf<N&&yf>=0&&M[xf][yf]!=-1 && (M[xf][yf]==0 || M[xi][yi]+1<M[xf][yf]))//Y tambi?n en la posici?n en la que se va a avanzar tiene que haber un cero o que se va a mejorar al menos por uno al n?mero que ya hay all?
 		return 1;
@@ -217,7 +229,6 @@ int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta){
 	}
 	return j;
 }
-
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 	int i,j,pregunta,resta_arriba=0;
 	for(i=0;i<N;i++){
@@ -312,7 +323,6 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){
 		printf("\n");
 	}
 }
-
 void ordenar_puntuaciones(usuario lista_punt[D]){
 	usuario aux;
 	int i,j;
