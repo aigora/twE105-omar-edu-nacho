@@ -21,7 +21,7 @@ int main(){
 	empezar:
 	system("color f9");
 	char letra,letras[D*D];
-	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel;
+	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel,dif='A'-'a';
 	float t1,t2,tiempo;
 	punto puntos[D*D]={0,0,0};//vector de la estructura punto
 	printf("Pon 1, 2 o 3 para eligir el nivel ");
@@ -45,11 +45,13 @@ int main(){
 				x--;y--;
 			}while(letra=='B'&&dentro_matriz(Mapa,x,y));
 		}
+		if(letra>='a'&&letra<='z')	letra+=dif;//Si la pone minuscula la pasa a mayuscula
 		if(dentro_matriz(Mapa,x,y)==0||(letra!='A'&&letra!='B')){//Si las coordenadas no están en la matriz o puso una letra distinta de A y B
 			printf("\nError\nEscribe las coordenadas de nuevo\n");
 			do{
 				scanf("%i %i %c",&x,&y,&letra);
 				x--;y--;
+				if(letra>='a'&&letra<='z')	letra+=dif;//Si la pone minuscula la pasa a mayuscula
 			}while(dentro_matriz(Mapa,x,y)==0||(letra!='A'&&letra!='B'));
 		}
 		if(Mapa[x][y]==-1&&letra=='A'){
