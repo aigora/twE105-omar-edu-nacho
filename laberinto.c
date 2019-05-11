@@ -24,25 +24,25 @@ int main (){
 	system("color f0");
 	punto puntos_camino[L];
 	int coord_x,coord_y,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,mapa[N][N]={
-	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1,-1,-1, 0, 0, 0},
-	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0,-1,-1, 0},
-	{-1,-1,-1,-1,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1, 0, 0,-1, 0, 0, 0},
+	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 0},
+	{-1,-1,-1,-1,-1, 0,-1, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0, 0, 0},
+	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
 	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{-1,-1,-1,-1, 0,-1,-1, 0,-1, 0, 0,-1,-1,-1,-1, 0,-1, 0,-1, 0},
+	{-1, 0,-1,-1, 0,-1,-1, 0,-1, 0, 0,-1,-1,-1,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0,-1, 0, 0, 0, 0,-1,-1, 0, 0, 0, 0,-1, 0,-1, 0,-1, 0},
-	{-1,-1,-1,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0},
+	{-1,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0, 0, 0,-1, 0,-1, 0},
-	{ 0, 0, 0,-1,-1,-1,-1, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0,-1,-1,-1,-1, 0,-1, 0, 0, 0, 0,-1,-1, 0,-1, 0,-1, 0},
 	{-1,-1, 0, 0, 0, 0, 0, 0,-1, 0, 0,-1, 0, 0,-1, 0,-1, 0,-1, 0},
 	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0, 0, 0, 0,-1, 0, 0,-1,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
-	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0,-1,-1, 0,-1, 0, 0, 0},
+	{ 0, 0, 0, 0, 0, 0,-1, 0, 0,-1,-1,-1, 0, 0,-1, 0,-1, 0,-1, 0},
+	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0,-1,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0},
-	{-1,-1,-1,-1, 0,-1, 0, 0,-1, 0,-1,-1, 0, 0,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0,-1, 0, 0, 0, 0,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0,-1, 0},
-	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
+	{-1, 0,-1,-1, 0,-1, 0, 0,-1, 0,-1,-1, 0, 0,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0,-1, 0, 0, 0, 0,-1, 0,-1, 0,-1, 0,-1, 0, 0, 0,-1, 0},
+	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0, 0, 0,-1, 0,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
 	};
 	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar,Puntuacion;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
@@ -113,9 +113,9 @@ int main (){
 	else // si la posici?n (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
 		printf("\tNo se llego a la meta\n");
 	if(pasos_usuario!=0){//Es decir, ha eligido jugar
-		Puntuacion=100000/((pasos_usuario+1-pasos_maquina)*(int)time_usuario);
+		Puntuacion=1000000/((pasos_usuario+1-pasos_maquina)*((int)time_usuario+1));
 		if(pasos_usuario==pasos_maquina)
-			Puntuacion+=5000;//Bonus si se sigue el camino más corto
+			Puntuacion+=50000;//Bonus si se sigue el camino más corto
 		printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partdia pulsa 1: ",Puntuacion);
 		if(getch()=='1'){
 			printf("\n\n\tPon Nombre: ");
@@ -129,7 +129,7 @@ int main (){
 			ordenar_puntuaciones(lista_punt);
 			system("cls");
 			printf("\t   Nombre \t Puntuacion");
-			for(i=0;lista_punt[i].punt!=0&&i<15;i++)
+			for(i=0;lista_punt[i].punt!=0&&i<10;i++)
 				printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
 			fclose(leer_archivo);
 		}
@@ -150,12 +150,12 @@ int condiciones(int M[N][N],int xi,int yi,int xf,int yf){//Para que devuelva 1 n
 		return 0;
 }
 
-void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punto puntos_camino[L],int v_x[L],int v_y[L],int contador){// Funci?n recursiva que repite una rama hasta que choque con una pared(-1), se salga de la matriz, haya una rama m?s corta que llega a la meta o se corte con una rama m?s corta para llegar a la meta
+void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punto puntos_camino[L],int v_x[L],int v_y[L],int contador){//Función recursiva que repite una rama hasta que choque con una pared(-1), se salga de la matriz, haya una rama más corta que llega a la meta o se corte con una rama más corta para llegar a la meta
 
-	if(M[x][y]==0||M[x_inicial][y_inicial]+1<M[x][y]){ //para que siga por esa rama, no se tiene que haber llegado a la meta o que vaya por un numero inferior al que hay en la meta
+	if(M[x][y]==0||M[x_inicial][y_inicial]+1<M[x][y]){//para que siga por esa rama, no se tiene que haber llegado a la meta o que vaya por un numero inferior al que hay en la meta
 	
 		if(condiciones(M,x_inicial,y_inicial,x_inicial-1,y_inicial)){
-			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una hac?a abajo y suma uno al numero de pasos que se uso para llegar a la anterior
+			M[x_inicial-1][y_inicial]=M[x_inicial][y_inicial]+1;//avanza una hacía abajo y suma uno al numero de pasos que se uso para llegar a la anterior
 			puntos_camino[contador].x=x_inicial-1;
 			puntos_camino[contador].y=y_inicial;//Las posiciones por las que se expande se guardan en vector_x y vector_y, en la posici?n contador
 			avanzar_4_sentidos(M,x,y,x_inicial-1,y_inicial, puntos_camino, v_x, v_y,contador+1);
@@ -217,42 +217,42 @@ void imprime_matriz(int M[N][N]){
 	}
 }
 
-int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta){
-	int i,j=2;
-	*resta=0;
+int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta_x){//Resta las coord de una posición con la anterior (Del camino más corto)
+	int i,resta_y=0;
+	*resta_x=0;
 	for(i=0;i<L;i++){
-		if(v_x[i]==x&&v_y[i]==y){// devuelve 2 si no est? esa posici?n en los vectores y 1,-1 o 0 dependiendo de si se desplaza a la derecha, izquierda o (abajo o arriba) respectivamente
-			j=v_y[i]-v_y[i-1];
-			*resta=v_x[i]-v_x[i-1];
+		if(v_x[i]==x&&v_y[i]==y){//Si ese punto está en los vectores v_x y v_y
+			resta_y=v_y[i]-v_y[i-1];//Resta la coord y de una posición y la anterior
+			*resta_x=v_x[i]-v_x[i-1];//Resta la coord x de una posición x la anterior
 			break;
-		}
-	}
-	return j;
+		}//resta_x devuelve 1 (abajo), -1(arriba) y 0 (no cambia de fila)
+	}	 //resta_y devuelve 1 (derecha), -1(izq) y 0 (no cambia de columna)
+	return resta_y;
 }
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
-	int i,j,pregunta,resta_arriba=0;
+	int i,j,resta_fila,resta_columna=0;
 	for(i=0;i<N;i++){
 		printf("\t");
 		for(j=0;j<N;j++){
 			if(i!=0||j!=0)
-				pregunta=Pregunta(v_x,v_y,i,j,&resta_arriba);
+				resta_fila=Pregunta(v_x,v_y,i,j,&resta_columna);
 			if(M[i][j]==-1)//Si hay -1 en esta posicion que dibuje una X
 				printf("  . ");
-			else if(i==v_x[0]&&j==v_y[0])
+			else if(i==v_x[0]&&j==v_y[0])//Posición inicial
 				printf("  O ");
-			else if(resta_arriba==1)
-					printf("  v ");// simbolo flecha hacia arriba
-			else if(resta_arriba==-1)
+			else if(resta_columna==1)
+					printf("  v ");
+			else if(resta_columna==-1)
 				printf("  ^ ");
-			else if(pregunta==1)
+			else if(resta_fila==1)
 				printf("  > ");
-			else if(pregunta==-1)
+			else if(resta_fila==-1)
 				printf("  < ");
 			else
 				printf("  . ");
 		}
-		printf("\n");		
-	}	
+		printf("\n");
+	}
 }
 
 int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
@@ -266,39 +266,39 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 			case 'W':
 			case 'w'://arriba
 				if(mapa[xi-1][yi]!=-1&&xi-1>=0){//Si no hay menos uno en esa posici?n (pared) y que no se salga de la matriz
-					xi--;
+					xi--;//se mueve hacía la arriba si se cumplen las condiciones
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
-					pasos++;
+					pasos++;//Aumenta número depasos
 				}
-			break;
+				break;
 			case 'S':
 			case 's'://abajo
-				if(mapa[xi+1][yi]!=-1&&xi+1<=N-1){
+				if(mapa[xi+1][yi]!=-1&&xi+1<=N-1){//Las mismas condiciones que el if de antes
 					xi++;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
-			break;
+				break;
 			case 'D':
 			case 'd'://derecha
-				if(mapa[xi][yi+1]!=-1&&yi+1<=N-1){
+				if(mapa[xi][yi+1]!=-1&&yi+1<=N-1){//Igual
 					yi++;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
-			break;
+				break;
 			case 'A':
 			case 'a'://izquierda
-				if(mapa[xi][yi-1]!=-1&&yi-1>=0){
+				if(mapa[xi][yi-1]!=-1&&yi-1>=0){//Igual
 					yi--;
 					system("cls");
 					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
-			break;
+				break;
 			default:
 				printf("No valido");
 		}	
@@ -306,24 +306,24 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 	return pasos;
 }
 
-void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){
+void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) posición actual (O) y (xf,yf) meta (M)
 	int i, j;
 	printf("\n");
 	for(i = 0; i < N; i++) {
 		for(j = 0; j < N; j++){
 			if(i==xi&&j==yi)// dibuja O en la posicion actual
 				printf("  O ");
-			else if(M[i][j]==-1)
+			else if(M[i][j]==-1)//X en pared
 				printf("  X ");
 			else if(i==xf&&j==yf)// dibuja M en la meta
 				printf("  M ");
 			else
-				printf("  . ");	
+				printf("  . ");
 			}
 		printf("\n");
 	}
 }
-void ordenar_puntuaciones(usuario lista_punt[D]){
+void ordenar_puntuaciones(usuario lista_punt[D]){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
 	int i,j;
 	for(i=0;lista_punt[i].punt!=0;i++)
