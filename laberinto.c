@@ -23,7 +23,7 @@ int main (){
 	empezar_de_nuevo:
 	system("color f0");
 	punto puntos_camino[L];
-	int coord_x,coord_y,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,mapa[N][N]={
+	int x_fin,y_fin,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,v_x[L]={0},v_y[L]={0},j,Puntuacion,mapa[N][N]={
 	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1, 0, 0,-1, 0, 0, 0},
 	{-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 0},
 	{-1,-1,-1,-1,-1, 0,-1, 0,-1,-1, 0,-1,-1, 0,-1, 0,-1, 0, 0, 0},
@@ -45,96 +45,79 @@ int main (){
 	{-1,-1,-1,-1,-1, 0,-1,-1,-1, 0, 0, 0,-1, 0,-1, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0,-1, 0,-1, 0,-1, 0},
 	};
-	int v_x[L]={0},v_y[L]={0},j,Pregunta_jugar,Puntuacion;//matriz para guardar listas para seguir el camino recorrdido(3=derecha,4=izq,1=arriba,2=abajo)
-	double ti,tf,time_usuario,time_maquina,tiempo_imprimir;
+	float ti,tf,time_usuario;
+	char Nickname[30];
 	usuario lista_punt[D]={{"hola",0}};
 	FILE *agregar_archivo=fopen("puntuacion_laberinto.txt","a");
-	if(agregar_archivo==NULL/*||leer_archivo==NULL*/){
-		printf("\n\terror");
+	if(agregar_archivo==NULL){
+		printf("\n\t Error");
 		return 1;
 	}
-	char Nickname[30];
 	imprime_matriz(mapa);
-	printf("\n\tcoordenadas de la posicion inicial x0 y0: ");
-	scanf("%i %i",&x_ini,&y_ini);
-	printf("\n\tcoordenadas de la posicion final x y: ");
-	scanf(" %i %i",&coord_x,&coord_y);
-	printf("\n\tTe atreves con el laberinto? \n\n\tSi quieres jugar pulsa 1 y si tienes miedo pulsa cualquier otro caracter: ");
-	scanf(" %i",&Pregunta_jugar);
-	x_ini--;y_ini--;coord_x--;coord_y--;
+	srand(time(NULL));
+	x_ini=rand()%N-1;
+	y_ini=rand()%2;//Se eligen la posición inicial y la meta de forma aleatoria ( con condiciones)
+	x_fin=rand()%N-1;
+	y_fin=rand()%2+N-3;
+	printf("\n\tTe atreves con el laberinto?");
+	getch();
 	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
-	mapa[coord_x][coord_y]=0;
-	if(Pregunta_jugar==1){
-		ti=clock();
-		pasos_usuario=jugar(mapa,x_ini,y_ini,coord_x,coord_y);
-		tf=clock();
-		time_usuario=(tf-ti)/(double)CLOCKS_PER_SEC;
-		system("cls");
-		printf("\n\tHas tardado %lf segundos y lo has hecho en %i pasos",time_usuario,pasos_usuario);
-		printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
-		getch();	
-		printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
-		getch();
-	}
-	else{
-		printf("\n\tVeo que no te atraves\n\n\tBueno ya lo resuelvo yo por ti");
-		getch();
-	}
-	puntos_camino[0].x=x_ini;
-	puntos_camino[0].y=y_ini;
+	mapa[x_fin][y_fin]=0;
 	ti=clock();
-	avanzar_4_sentidos(mapa,coord_x,coord_y,x_ini,y_ini,puntos_camino,v_x,v_y,1);
+	pasos_usuario=jugar(mapa,x_ini,y_ini,x_fin,y_fin);//En esta función juega el usuario y devuelve los pasos que ha hecho
 	tf=clock();
-	time_maquina=(tf-ti)/(double)CLOCKS_PER_SEC;
-	ti=clock();
+	time_usuario=(tf-ti)/(double)CLOCKS_PER_SEC;
+	system("cls");
+	printf("\n\tHas tardado %f segundos y lo has hecho en %i pasos",time_usuario,pasos_usuario);
+	printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
+	getch();	
+	printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
+	getch();
+	
+	puntos_camino[0].x=x_ini;//Las coordenadnas del camino más corto se guardarán por orden en ese vector
+	puntos_camino[0].y=y_ini;
+	avanzar_4_sentidos(mapa,x_fin,y_fin,x_ini,y_ini,puntos_camino,v_x,v_y,1);//La maquina resuelve el laberinto
 	printf("\n\n");
-	pasos_maquina=mapa[coord_x][coord_y]-1;
-	if(pasos_maquina!=0){//Es decir, se ha llegado a la meta
-		system("cls");
-		printf("\n\tEl camino mas corto es de %i pasos\n",pasos_maquina);	
-		printf("\n\tNo es por nada, pero solo he tardado %0.5lf segundos \n\n\tEste es el camino seguido\n\n",time_maquina);
+	pasos_maquina=mapa[x_fin][y_fin]-1;
+	system("cls");
+	printf("\n\tEl camino mas corto es de %i pasos\n",pasos_maquina);	
+	printf("\n\tEste es el camino seguido\n\n");
+	i=0;
+	ti=clock();
+	while(v_x[i-1]!=x_fin||v_y[i-1]!=y_fin){//Mientras no se llegá a la meta
 		tf=clock();
-		tiempo_imprimir=(tf-ti)/(float)CLOCKS_PER_SEC;
-		printf("\n\tSe tardo %f segundos en pintar el resultado\n",tiempo_imprimir);
-		i=0;
-		ti=clock();
-		while(v_x[i-1]!=coord_x||v_y[i-1]!=coord_y){
-			tf=clock();
-			if((tf-ti)/CLOCKS_PER_SEC>0.1){
-				ti=clock();
-				system("cls");
-				imprime_matriz_jugar(mapa,v_x[i],v_y[i],coord_x,coord_y);
-				i++;
-			}
-		}
-		system("cls");
-		imprime_matriz_con_flechas(mapa,v_x,v_y);
-	}
-	else // si la posici?n (coord_x,coord_y) vale 0 significa que no se puede llegar a la meta
-		printf("\tNo se llego a la meta\n");
-	if(pasos_usuario!=0){//Es decir, ha eligido jugar
-		Puntuacion=1000000/((pasos_usuario+1-pasos_maquina)*((int)time_usuario+1));
-		if(pasos_usuario==pasos_maquina)
-			Puntuacion+=50000;//Bonus si se sigue el camino más corto
-		printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partdia pulsa 1: ",Puntuacion);
-		if(getch()=='1'){
-			printf("\n\n\tPon Nombre: ");
-			scanf(" %[^\n]",Nickname);
-			fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
-			i=0;
-			fclose(agregar_archivo);
-			FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
-			while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
-				i++;
-			ordenar_puntuaciones(lista_punt);
+		if((tf-ti)/CLOCKS_PER_SEC>0.1){//Es decir tiempo entre pasos es al menos de 0.1 segundos
+			ti=clock();
 			system("cls");
-			printf("\t   Nombre \t Puntuacion");
-			for(i=0;lista_punt[i].punt!=0&&i<10;i++)
-				printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
-			fclose(leer_archivo);
+			imprime_matriz_jugar(mapa,v_x[i],v_y[i],x_fin,y_fin);
+			i++;
 		}
 	}
-	printf("\n\tQuieres seguir jugado? Pulsa 1:");
+	system("cls");
+	imprime_matriz_con_flechas(mapa,v_x,v_y);
+	
+	Puntuacion=1000000/((pasos_usuario+1-pasos_maquina)*((int)time_usuario+1));//Fórmula para calcular la puntuación
+	if(pasos_usuario==pasos_maquina)
+		Puntuacion+=50000;////Bonus si se sigue el camino más corto
+	printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partdia pulsa 1: ",Puntuacion);
+	if(getch()=='1'){
+		printf("\n\n\tPon Nickname: ");
+		scanf(" %[^\n]",Nickname);
+		fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);//Se guarda la puntuacion
+		i=0;
+		fclose(agregar_archivo);//Se cierra y se abre en modo lectura, ya que de esta forma leerá la puntuación que acaba de leer el usuario
+		FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
+		while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+			i++;
+		ordenar_puntuaciones(lista_punt);
+		system("cls");
+		printf("\t   Nombre \t Puntuacion");
+		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
+			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
+		fclose(leer_archivo);
+	}
+	
+	printf("\n\n\tQuieres seguir jugado? Pulsa 1:");
 	if(getch()=='1'){
 		system("cls");
 		goto empezar_de_nuevo;
@@ -300,7 +283,7 @@ int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
 				}
 				break;
 			default:
-				printf("No valido");
+				printf("No valido ");
 		}	
 	}
 	return pasos;
