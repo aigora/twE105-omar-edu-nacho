@@ -7,7 +7,10 @@ typedef struct{//Estructura con coordenadas del punto y a cada punto va asociada
 	int x,y;
 	char letra;
 }punto;
-
+typedef struct{
+	char nombre[30];
+	int punt;
+}usuario;
 void imprime_matriz(int M[D][D]);// imprime la matriz poniendo X en lugar de los -1 (bombas)
 int crear_buscaminas(int M[D][D],int nivel);//pone en cada casilla el número de bombas que tiene alrededor
 int bombas_alrededor(int M[D][D],int i,int j);//cuenta el numero de bombas alrededor de una posición (i,j)
@@ -16,15 +19,22 @@ int dentro_matriz(int M[D][D],int x,int y);//compueba si una posición está dentr
 void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y);//Es invocada cuando se elige una posición donde hay un cero ,muestra todos los valores cerca del 0 y si repite la función en esos números si hay un cero (función recursiva)
 void agregar(punto pts[D*D],int num_pts,int x,int y);//Le añade al vector puntos un punto en la posición num_pts
 int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y);//Comprueba si el punto (x,y) está en el vector puntos, num_ptos es el número de elementos del vector
+void ordenar_puntuaciones(usuario lista_punt[D]);
 
 int main(){
 	empezar:
 	system("color f9");
-	char letra,letras[D*D];
-	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel,dif='A'-'a';
+	FILE *agregar_archivo=fopen("puntuacion_buscaminas.txt","a");
+	if(agregar_archivo==NULL){
+		printf("error");
+		return 1;
+	}
+	char letra,letras[D*D],Nickname[20];
+	usuario lista_punt[30]={{"iniciamos",0}};
+	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel,dif='A'-'a',Puntuacion;
 	float t1,t2,tiempo;
 	punto puntos[D*D]={0,0,0};//vector de la estructura punto
-	printf("Pon 1, 2 o 3 para eligir el nivel ");
+	printf("\n\tPon 1, 2 o 3 para eligir el nivel ");
 	nivel=getch();//Elige el nivel 1,2 o 3
 	if(nivel=='1')nivel=2;
 	else if(nivel=='2')nivel=3;
@@ -57,7 +67,7 @@ int main(){
 		if(Mapa[x][y]==-1&&letra=='A'){
 			system("cls");
 			imprime_matriz(Mapa);
-			printf("\nHas perdido");
+			printf("\n\tHas perdido");
 			break;//Sale del Do-While
 		}
 		else{
@@ -74,16 +84,32 @@ int main(){
 			}
 			system("cls");
 			banderas_usadas=jugar(Mapa,puntos,num_puntos);//jugar devuelve las banderas usadas y -1 si ha ganado
+			///////Ha ganado///////
 			if(banderas_usadas==-1){
 				t2=clock();
 				tiempo=(t2-t1)/(float)CLOCKS_PER_SEC;//Calcula tiempo que se ha tardado en resolverlo
-				printf("\nHAS GANADO y has tardado %i minutos y %i segundos",(int)tiempo/60,(int)tiempo%60);//pone el tiempo en formato minutos y segundos (No se puede hacer en menos de un minuto)
+				printf("\n\n\tHAS GANADO y has tardado %i minutos y %i segundos",(int)tiempo/60,(int)tiempo%60);//pone el tiempo en formato minutos y segundos (No se puede hacer en menos de un minuto)
+				printf("\n\n\tPon Nombre: ");
+				scanf(" %[^\n]",Nickname);
+				Puntuacion=1000000/tiempo;;
+				fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
+				i=0;
+				fclose(agregar_archivo);
+				FILE *leer_archivo=fopen("puntuacion_buscaminas.txt","r");
+				while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+					i++;
+				ordenar_puntuaciones(lista_punt);
+				system("cls");
+				printf("\t   Nombre \t Puntuacion");
+				for(i=0;lista_punt[i].punt!=0&&i<10;i++)
+					printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
+				fclose(leer_archivo);
 				break;	
 			}
-			printf("\nTe quedan %i banderas por usar\n",bombas-banderas_usadas);
+			printf("\n\tTe quedan %i banderas por usar\n",bombas-banderas_usadas);
 		}
 	}while(1);
-	printf("\nQuieres jugar de nuevo? Pulsa 1: ");
+	printf("\n\tQuieres jugar de nuevo? Pulsa 1: ");
 	if(getch()=='1'){
 		system("cls");
 		goto empezar;
@@ -204,5 +230,16 @@ int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y){//devuelve -1 si 
 		if(puntos[i].x==x&&puntos[i].y==y)
 			return i;
 	return -1;
+}
+void ordenar_puntuaciones(usuario lista_punt[D]){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+	usuario aux;
+	int i,j;
+	for(i=0;lista_punt[i].punt!=0;i++)
+		for(j=i+1;lista_punt[j].punt!=0;j++)
+			if(lista_punt[i].punt<lista_punt[j].punt){
+				aux=lista_punt[i];
+				lista_punt[i]=lista_punt[j];
+				lista_punt[j]=aux;
+			}
 }
 
