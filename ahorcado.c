@@ -4,14 +4,20 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
+#define E 30
 typedef struct{
-	char palabra[30];
+	char palabra[E];
 }pal;
-void principal(char adivinapalabra[30], char cadena[30]);
+typedef struct{
+	char nombre[E];
+	int punt;
+}usuario;
+void principal(char adivinapalabra[E], char cadena[E]);
 int numaleatorio(int n);
-int ahorcado(char adivinapalabra[30], char cadena[30]);
+int ahorcado(char adivinapalabra[E], char cadena[E]);
 void imprime_ahorcado(int intentos);
-
+void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer);
 
 void main(){
 
@@ -22,8 +28,9 @@ system("COLOR 2F");
 	pal musica[10]={"BOHEMIAN RHAPSODY" , "THRILLER" , "BOYS DONT CRY" , "WITH OR WITHOUT YOU" , "PURPURINA" , "LET IT BE" , "HEY BROTHER" , "VIVA LA VIDA" , "PAQUITO EL CHOCOLATERO" , "RAP GOD"};
 	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "JUANFRAN AL PALO" , "EL BICHO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "PRESS BANCA"};
 	char letra;
-	char letrausuario[30]=" ";
+	char letrausuario[E]=" ";
 	char categoria; 
+
 	printf("Bienvenido al Ahorcado\n");
 	system ("PAUSE");
 	system("CLS");
@@ -78,16 +85,39 @@ system("COLOR 2F");
 
 
 void principal(char adivinapalabra[30], char cadena[30]){
-	int intentos=7, fallos=0, i;
+	int intentos=7, fallos=0, i, puntuacion;
 	i=0;
+	char nombre[20]="";
+	usuario lista_puntuaciones[E]={{"iniciar",0}};
+	FILE *agregar=fopen("puntuacion_ahorcado.txt","a");
+		if(agregar==NULL){
+		printf("\n\t Error");
+		exit(1);
+	}
+	float t1=clock(), t2, tiempo_total;
 	while(1){
 		fallos=ahorcado(adivinapalabra, cadena);
+		if(fallos==-1){
+			printf("\nHAS GANADO!!\n");
+			t2=clock();
+			tiempo_total = (t2-t1)/CLOCKS_PER_SEC;
+			puntuacion=1000000/(int)tiempo_total*intentos;
+			printf("Has tardado %f\nTu puntuacion ha sido de %i\n", tiempo_total, puntuacion);
+			printf("Pon Nickname:\n");
+			scanf(" %[^\n]", nombre);
+			fprintf(agregar, "%s.%i\n", nombre, puntuacion);
+			fclose(agregar);
+			FILE *leer=fopen("puntuacion_ahorcado.txt","r");
+			ordenar_puntuaciones(lista_puntuaciones, leer);
+			
+			exit(0);
+		}
 		intentos-=fallos;
 		printf("\n\n");
 		imprime_ahorcado(intentos);
 		printf("\nLas letras introducidas que llevas son: %s\n", cadena);
 		printf("Introduce una letra:\n");
-		scanf(" %c", &cadena[i]);
+		cadena[i]=getch();
 		system("CLS");				
 		i++;					
 	}
@@ -130,8 +160,8 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		}
 	}
 	if(ganado==1){
-		printf("\nHAS GANADO!!");
-		exit(0);
+		//printf("\nHAS GANADO!!");
+		return -1;
 	}
 	if(strlen(adivinapalabra)!=1)//Para que no empiece a comprobar si hay algún fallo antes de que el vector tenga contenido
 		for(i=0,Pregunta_fallo=1;adivinapalabra[i]!='\0';i++)
@@ -177,4 +207,21 @@ void imprime_ahorcado(int intentos){
 	}
 }
 
+void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+	usuario aux;
+	int i=0,j;
+	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+		i++;
+	for(i=0;lista_punt[i].punt!=0;i++)
+		for(j=i+1;lista_punt[j].punt!=0;j++)
+			if(lista_punt[i].punt<lista_punt[j].punt){
+				aux=lista_punt[i];
+				lista_punt[i]=lista_punt[j];
+				lista_punt[j]=aux;
+			}
+						system("cls");
+		printf("\t   Nombre \t Puntuacion");
+		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
+			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
+}
 
