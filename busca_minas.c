@@ -35,10 +35,10 @@ int main(){
 	float t1,t2,tiempo;
 	punto puntos[D*D]={0,0,0};//vector de la estructura punto
 	printf("\n\tPon 1, 2 o 3 para eligir el nivel ");
-	nivel=getch();//Elige el nivel 1,2 o 3
-	if(nivel=='1')nivel=2;
-	else if(nivel=='2')nivel=3;
-	else if(nivel=='3')nivel=5;
+	scanf("%i",&nivel);//Elige el nivel 1,2 o 3
+	if(nivel==1)nivel=2;
+	else if(nivel==2)nivel=3;
+	else if(nivel==3)nivel=5;
 	else goto empezar;
 	system("cls");
 	bombas=crear_buscaminas(Mapa,nivel);//Devuelve el número de bombas del mapa
@@ -89,9 +89,10 @@ int main(){
 				t2=clock();
 				tiempo=(t2-t1)/(float)CLOCKS_PER_SEC;//Calcula tiempo que se ha tardado en resolverlo
 				printf("\n\n\tHAS GANADO y has tardado %i minutos y %i segundos",(int)tiempo/60,(int)tiempo%60);//pone el tiempo en formato minutos y segundos (No se puede hacer en menos de un minuto)
-				printf("\n\n\tPon Nombre: ");
+				Puntuacion=nivel*1000000/(int)tiempo;;
+				printf("\n\n\tTu puntuacion es %i",Puntuacion);
+				printf("\n\tPon Nombre: ");
 				scanf(" %[^\n]",Nickname);
-				Puntuacion=1000000/tiempo;;
 				fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
 				i=0;
 				fclose(agregar_archivo);
