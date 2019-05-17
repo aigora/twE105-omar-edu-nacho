@@ -18,7 +18,7 @@ void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en
 int jugar(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
 int condiciones(int M[N][N],int,int,int,int);
 void Copiar_vector(int v1[L],int v2[L]);
-void ordenar_puntuaciones(usuario lista_punt[D]);
+void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer);
 int main (){
 	empezar_de_nuevo:
 	system("color f0");
@@ -107,9 +107,9 @@ int main (){
 		i=0;
 		fclose(agregar_archivo);//Se cierra y se abre en modo lectura, ya que de esta forma leerá la puntuación que acaba de leer el usuario
 		FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
-		while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
-			i++;
-		ordenar_puntuaciones(lista_punt);
+	//	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+	//		i++;
+		ordenar_puntuaciones(lista_punt,leer_archivo);
 		system("cls");
 		printf("\t   Nombre \t Puntuacion");
 		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
@@ -306,9 +306,11 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) pos
 		printf("\n");
 	}
 }
-void ordenar_puntuaciones(usuario lista_punt[D]){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
-	int i,j;
+	int i=0,j;
+	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+		i++;
 	for(i=0;lista_punt[i].punt!=0;i++)
 		for(j=i+1;lista_punt[j].punt!=0;j++)
 			if(lista_punt[i].punt<lista_punt[j].punt){
