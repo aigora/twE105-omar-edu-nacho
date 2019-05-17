@@ -11,11 +11,11 @@ typedef struct{
 	int punt;
 }usuario;
 void avanzar_4_sentidos(int M[N][N],int coord_x,int coord_y,int,int,punto punto_camino[L],int v_x[L],int v_y[L],int contador);
-void imprime_matriz(int M[N][N]);
+void imprime_matriz_lab(int M[N][N]);
 int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posici?n est? en los vectores (v_x,v_y)
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]);
 void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
-int jugar(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
+int jugar_lab(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
 int condiciones(int M[N][N],int,int,int,int);
 void Copiar_vector(int v1[L],int v2[L]);
 void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer);
@@ -31,7 +31,7 @@ int main (){
 	{ 0,-1,-1, 0,-1,-1,-1, 0,-1, 0, 0, 0, 0, 0, 0, 0,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1, 0,-1, 0},
 	{-1, 0,-1,-1, 0,-1,-1, 0,-1, 0, 0,-1,-1,-1,-1, 0,-1, 0,-1, 0},
-	{ 0, 0, 0,-1, 0, 0, 0, 0,-1,-1, 0, 0, 0, 0,-1, 0,-1, 0,-1, 0},
+	{ 0, 0, 0,-1, 0, 0, 0, 0,-1,-1, 0, 0, 0, 0,-1, 0,-1, 0, 0, 0},
 	{-1,-1,-1,-1,-1,-1,-1, 0,-1, 0,-1,-1,-1, 0,-1,-1,-1, 0,-1, 0},
 	{ 0, 0, 0, 0, 0, 0,-1, 0, 0, 0,-1,-1,-1, 0, 0, 0,-1, 0,-1, 0},
 	{ 0, 0, 0,-1,-1,-1,-1, 0,-1, 0, 0, 0, 0,-1,-1, 0,-1, 0,-1, 0},
@@ -53,7 +53,7 @@ int main (){
 		printf("\n\t Error");
 		return 1;
 	}
-	imprime_matriz(mapa);
+	imprime_matriz_lab(mapa);
 	srand(time(NULL));
 	x_ini=rand()%N-1;
 	y_ini=rand()%2;//Se eligen la posición inicial y la meta de forma aleatoria ( con condiciones)
@@ -64,7 +64,7 @@ int main (){
 	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
 	mapa[x_fin][y_fin]=0;
 	ti=clock();
-	pasos_usuario=jugar(mapa,x_ini,y_ini,x_fin,y_fin);//En esta función juega el usuario y devuelve los pasos que ha hecho
+	pasos_usuario=jugar_lab(mapa,x_ini,y_ini,x_fin,y_fin);//En esta función juega el usuario y devuelve los pasos que ha hecho
 	tf=clock();
 	time_usuario=(tf-ti)/(double)CLOCKS_PER_SEC;
 	system("cls");
@@ -169,7 +169,7 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punt
 	}
 }
 
-void imprime_matriz(int M[N][N]){
+void imprime_matriz_lab(int M[N][N]){
 	int i, j;
 	printf("\t");
 	for(i=1;i<=N;i++){
@@ -234,7 +234,7 @@ void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 	}
 }
 
-int jugar(int mapa[N][N],int xi,int yi,int xf,int yf){
+int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 	system("cls");
 	printf("\n\tIntenta llegar por el camino mas corto:\n\n");
 	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
