@@ -16,12 +16,12 @@ typedef struct{
 void principal(char adivinapalabra[E], char cadena[E]);
 int numaleatorio(int n);
 int ahorcado(char adivinapalabra[E], char cadena[E]);
-void imprime_ahorcado(int intentos);
+int imprime_ahorcado(int intentos);
 void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer);
 
 void main(){
-
-system("COLOR 2F");
+	empezar:
+	system("COLOR 2F");
 	int aleatorio=0;
 	pal peliculas[10]={"AVENGERS ENDGAME" , "TRANSFORMERS" , "HARRY POTTER" , "TITANIC" , "EL SENOR DE LOS ANILLOS" , "STAR WARS" , "GLADIADOR" , "JURASSIC PARK" , "EL CABALLERO OSCURO" , "TOY STORY"};
 	pal series[10]={"JUEGO DE TRONOS" , "STRANGER THINGS" , "WESTWORLD" , "FRIENDS" , "COMO CONOCI A VUESTRA MADRE" , "LA QUE SE AVECINA" , "LA CASA DE PAPEL" , "PEAKY BLINDERS" , "EL PRINCIPE DE BEL AIR" , "THE BIG BANG THEORY"};
@@ -29,20 +29,15 @@ system("COLOR 2F");
 	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "JUANFRAN AL PALO" , "EL BICHO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "PRESS BANCA"};
 	char letra;
 	char letrausuario[E]=" ";
-	char categoria; 
 
-	printf("Bienvenido al Ahorcado\n");
+/*	printf("Bienvenido al Ahorcado\n");
 	system ("PAUSE");
 	system("CLS");
 	printf("En este juego el objetivo es adivinar la frase o palabra con el minimo numero de fallos\n");
 	system("PAUSE"); 
-	system("CLS");
+	system("CLS");*/
 	printf("Selecciona la categoria de la frase:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
-	scanf("%c", &categoria);
-
-
-	
-		switch(categoria){
+		switch(getch()){
 			case 'a':
 			case 'A':
 				system("CLS");
@@ -79,13 +74,18 @@ system("COLOR 2F");
 			printf("Escoge una opcion valida\n");
 			system("PAUSE");		
 		}
+		printf("\n Quieres jugar de nuevo? Pulsa 1:");
+		if(getch()=='1') {
+			system("cls");
+		goto empezar;
+	}
 }	
 	
 	
 
 
 void principal(char adivinapalabra[30], char cadena[30]){
-	int intentos=7, fallos=0, i, puntuacion;
+	int intentos=7, fallos=0, i, puntuacion,si_perdido;
 	i=0;
 	char nombre[20]="";
 	usuario lista_puntuaciones[E]={{"iniciar",0}};
@@ -109,12 +109,12 @@ void principal(char adivinapalabra[30], char cadena[30]){
 			fclose(agregar);
 			FILE *leer=fopen("puntuacion_ahorcado.txt","r");
 			ordenar_puntuaciones(lista_puntuaciones, leer);
-			
-			exit(0);
+			break;
 		}
 		intentos-=fallos;
 		printf("\n\n");
-		imprime_ahorcado(intentos);
+		si_perdido=imprime_ahorcado(intentos);
+		if(si_perdido==1) break;
 		printf("\nLas letras introducidas que llevas son: %s\n", cadena);
 		printf("Introduce una letra:\n");
 		cadena[i]=getch();
@@ -170,7 +170,7 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		
 	return Pregunta_fallo;
 }
-void imprime_ahorcado(int intentos){
+int imprime_ahorcado(int intentos){
 	if(intentos==7){
 	printf("Te quedan %d intentos\n\n", intentos);
 				printf(" _______\n/        |\n|\n|\n|\n|\n|\n|__\n");	
@@ -203,8 +203,9 @@ void imprime_ahorcado(int intentos){
 	if(intentos==0){
 				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
 	printf("HAS PERDIDO :(\n");	
-	exit(1);
+	return 1;
 	}
+	return 0;
 }
 
 void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
