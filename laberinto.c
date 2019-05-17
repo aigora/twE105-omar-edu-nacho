@@ -47,7 +47,7 @@ int main (){
 	};
 	float ti,tf,time_usuario;
 	char Nickname[30];
-	usuario lista_punt[D]={{"hola",0}};
+	usuario lista_punt[D]={{"iniciar",0}};
 	FILE *agregar_archivo=fopen("puntuacion_laberinto.txt","a");
 	if(agregar_archivo==NULL){
 		printf("\n\t Error");
@@ -110,10 +110,6 @@ int main (){
 	//	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
 	//		i++;
 		ordenar_puntuaciones(lista_punt,leer_archivo);
-		system("cls");
-		printf("\t   Nombre \t Puntuacion");
-		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
-			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
 		fclose(leer_archivo);
 	}
 	
@@ -318,5 +314,9 @@ void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el 
 				lista_punt[i]=lista_punt[j];
 				lista_punt[j]=aux;
 			}
+			system("cls");
+		printf("\t   Nombre \t Puntuacion");
+		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
+			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
 }
 
