@@ -7,7 +7,7 @@ void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en
 int jugar_lab(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
 int condiciones(int M[N][N],int,int,int,int);
 void Copiar_vector(int v1[L],int v2[L]);
-void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer);
+void Puntuaciones(usuario lista_punt[D],FILE *leer);
 */
 #include <stdio.h>
 #include <time.h>
@@ -122,7 +122,7 @@ void laberinto(){
 		FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
 	//	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
 	//		i++;
-		ordenar_puntuaciones(lista_punt,leer_archivo);
+		Puntuaciones(lista_punt,leer_archivo);
 		fclose(leer_archivo);
 	}
 	
@@ -313,7 +313,7 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) pos
 		printf("\n");
 	}
 }
-void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
 	int i=0,j;
 	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
@@ -409,7 +409,7 @@ void buscaminas(){
 				i=0;
 				fclose(agregar_archivo);
 				FILE *leer_archivo=fopen("puntuacion_buscaminas.txt","r");
-				ordenar_puntuaciones(lista_punt,leer_archivo);
+				Puntuaciones(lista_punt,leer_archivo);
 				system("cls");
 				printf("\t   Nombre \t Puntuacion");
 				for(i=0;lista_punt[i].punt!=0&&i<10;i++)
@@ -631,7 +631,7 @@ void principal(char adivinapalabra[30], char cadena[30]){
 			fprintf(agregar, "%s.%i\n", nombre, puntuacion);
 			fclose(agregar);
 			FILE *leer=fopen("puntuacion_ahorcado.txt","r");
-			ordenar_puntuaciones(lista_puntuaciones, leer);
+			Puntuaciones(lista_puntuaciones, leer);
 			break;
 		}
 		intentos-=fallos;

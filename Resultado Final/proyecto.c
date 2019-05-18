@@ -6,6 +6,7 @@ int main(){
 	printf("\nBienvenido a GEC");
 	getch();
 	while(1){
+		system("color FD");
 		printf("\nQue te apetece jugar?\n\nL->Laberinto\nA->Ahorcado\nB->Buscamninas");
 		switch(getch()){
 			case 'L':
