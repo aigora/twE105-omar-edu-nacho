@@ -47,7 +47,7 @@ int esta_en_vector(punto_letra puntos[d*d],int num_ptos,int x,int y);//Comprueba
 //////LAB////////////
 void Laberinto(){
 	empezar_de_nuevo:
-	system("color f0");
+	system("color B5");
 	punto puntos_camino[L];
 	int x_fin,y_fin,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,v_x[L]={0},v_y[L]={0},j,Puntuacion,mapa[N][N]={
 	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1, 0, 0,-1, 0, 0, 0},
@@ -86,9 +86,9 @@ void Laberinto(){
 	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
 	mapa[x_fin][y_fin]=0;
 	imprime_matriz_lab(mapa,x_ini,y_ini,x_fin,y_fin);
-	printf("\tTe atreves con el laberinto?\n\n\tTienes que ir con La O a la M");
-	printf("\n\tIntenta llegar por el camino mas corto:\n\n");
-	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
+	printf("\n\t\tTe atreves con el laberinto?\n\n\t\tTienes que ir con La O a la M");
+	printf("\n\t\tIntenta llegar por el camino mas corto:\n\n");
+	printf("\t\tw=arriba\n\t\td=derecha\n\t\ts=abajo\n\t\ta=izquierda\n");
 	getch();
 	ti=clock();
 	pasos_usuario=jugar_lab(mapa,x_ini,y_ini,x_fin,y_fin);//En esta función juega el usuario y devuelve los pasos que ha hecho
@@ -112,7 +112,7 @@ void Laberinto(){
 	ti=clock();
 	while(v_x[i-1]!=x_fin||v_y[i-1]!=y_fin){//Mientras no se llegá a la meta
 		tf=clock();
-		if((tf-ti)/CLOCKS_PER_SEC>0.1){//Es decir tiempo entre pasos es al menos de 0.1 segundos
+		if((tf-ti)/CLOCKS_PER_SEC>0.2){//Es decir tiempo entre pasos es al menos de 0.2 segundos
 			ti=clock();
 			system("cls");
 			imprime_matriz_lab(mapa,v_x[i],v_y[i],x_fin,y_fin);
@@ -282,8 +282,9 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 
 void imprime_matriz_lab(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) posición actual (O) y (xf,yf) meta (M)
 	int i, j;
-	printf("\n");
+	printf("\n\n");
 	for(i = 0; i < N; i++) {
+		printf("\t\t");
 		for(j = 0; j < N; j++){
 			if(i==xi&&j==yi)// dibuja O en la posicion actual
 				printf("  O ");
