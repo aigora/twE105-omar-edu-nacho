@@ -1,5 +1,5 @@
 #include <stdio.h>
-//#include "GEC.h"
+#include "GEC.h"
 
 int main(){
 	system("color FD");
@@ -13,17 +13,17 @@ int main(){
 			case 'L':
 			case 'l':
 				system("cls");
-		//		Laberinto();
+				Laberinto();
 			break;
 			case 'B':
 			case 'b':
 				system("cls");
-		//		Buscaminas();
+				Buscaminas();
 			break;
 			case 'A':
 			case 'a':
 				system("cls");
-		//		Ahorcado();
+				Ahorcado();
 			break;
 			default:
 				return 1;
