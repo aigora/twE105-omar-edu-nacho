@@ -1,33 +1,35 @@
+#include <stdio.h>
+//#include "GEC.h"
 
-#include "GEC.h"
 int main(){
 	system("color FD");
 	int i;
-	printf("\nBienvenido a GEC");
+	printf("\n\tBienvenido a GEC");
 	getch();
 	while(1){
 		system("color FD");
-		printf("\nQue te apetece jugar?\n\nL->Laberinto\nA->Ahorcado\nB->Buscamninas");
+		printf("\n\tQue te apetece jugar?\n\n\tL->Laberinto\n\tA->Ahorcado\n\tB->Buscamninas");
 		switch(getch()){
 			case 'L':
 			case 'l':
 				system("cls");
-				laberinto();
+		//		Laberinto();
 			break;
 			case 'B':
 			case 'b':
 				system("cls");
-				buscaminas();
+		//		Buscaminas();
 			break;
 			case 'A':
 			case 'a':
 				system("cls");
-				Ahorcado();
+		//		Ahorcado();
 			break;
 			default:
-				return 0;
+				return 1;
 		}
 		system("cls");
 	}
 	return 0;
 }
+

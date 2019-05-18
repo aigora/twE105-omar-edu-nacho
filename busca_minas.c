@@ -1,45 +1,45 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
-#define D 10//dimensión de la matriz
-
+#define d 10//dimensión de la matriz
+#define D 20
 typedef struct{//Estructura con coordenadas del punto y a cada punto va asociada una letra
 	int x,y;
 	char letra;
-}punto;
+}punto_letra;
 typedef struct{
 	char nombre[30];
 	int punt;
 }usuario;
-void imprime_matriz(int M[D][D]);// imprime la matriz poniendo X en lugar de los -1 (bombas)
-int crear_buscaminas(int M[D][D],int nivel);//pone en cada casilla el número de bombas que tiene alrededor
-int bombas_alrededor(int M[D][D],int i,int j);//cuenta el numero de bombas alrededor de una posición (i,j)
-int jugar(int M[D][D],punto puntos[D*D],int num_puntos);//imprime los elementos de la matriz como ".", menos los que están en la varaible puntos (que son los puntos que ha eligido el usuario)
-int dentro_matriz(int M[D][D],int x,int y);//compueba si una posición está dentro de una matriz
-void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y);//Es invocada cuando se elige una posición donde hay un cero ,muestra todos los valores cerca del 0 y si repite la función en esos números si hay un cero (función recursiva)
-void agregar(punto pts[D*D],int num_pts,int x,int y);//Le añade al vector puntos un punto en la posición num_pts
-int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y);//Comprueba si el punto (x,y) está en el vector puntos, num_ptos es el número de elementos del vector
-void ordenar_puntuaciones(usuario lista_punt[D]);
+void imprime_matriz_busca(int M[d][d]);// imprime la matriz poniendo X en lugar de los -1 (bombas)
+int crear_buscaminas(int M[d][d],int nivel);//pone en cada casilla el número de bombas que tiene alrededor
+int bombas_alrededor(int M[d][d],int i,int j);//cuenta el numero de bombas alrededor de una posición (i,j)
+int jugar(int M[d][d],punto_letra puntos[d*d],int num_puntos);//imprime los elementos de la matriz como ".", menos los que están en la varaible puntos (que son los puntos que ha eligido el usuario)
+int dentro_matriz(int M[d][d],int x,int y);//compueba si una posición está dentro de una matriz
+void Expandir(int M[d][d],punto_letra pts[d*d],int *num_pts,int x,int y);//Es invocada cuando se elige una posición donde hay un cero ,muestra todos los valores cerca del 0 y si repite la función en esos números si hay un cero (función recursiva)
+void agregar(punto_letra pts[d*d],int num_pts,int x,int y);//Le añade al vector puntos un punto en la posición num_pts
+int esta_en_vector(punto_letra puntos[d*d],int num_ptos,int x,int y);//Comprueba si el punto (x,y) está en el vector puntos, num_ptos es el número de elementos del vector
+void Puntuaciones(usuario lista_punt[D],FILE *leer);
 
 int main(){
-	empezar:
+	empezar_bus:
 	system("color f9");
 	FILE *agregar_archivo=fopen("puntuacion_buscaminas.txt","a");
 	if(agregar_archivo==NULL){
 		printf("error");
 		return 1;
 	}
-	char letra,letras[D*D],Nickname[20];
-	usuario lista_punt[30]={{"iniciamos",0}};
-	int random,bombas=0,Mapa[D][D]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel,dif='A'-'a',Puntuacion;
+	char letra,letras[d*d],Nickname[20];
+	usuario lista_punt[D]={{"iniciamos",0}};
+	int random,bombas=0,Mapa[d][d]={0,0,0},fila,columna,num_puntos=0,x,y,i,banderas_usadas,Pregunta_esta,nivel,dif='A'-'a',Puntuacion;
 	float t1,t2,tiempo;
-	punto puntos[D*D]={0,0,0};//vector de la estructura punto
+	punto_letra puntos[d*d]={0,0,0};//vector de la estructura punto
 	printf("\n\tPon 1, 2 o 3 para eligir el nivel ");
 	scanf("%i",&nivel);//Elige el nivel 1,2 o 3
 	if(nivel==1)nivel=2;
 	else if(nivel==2)nivel=3;
 	else if(nivel==3)nivel=5;
-	else goto empezar;
+	else goto empezar_bus;
 	system("cls");
 	bombas=crear_buscaminas(Mapa,nivel);//Devuelve el número de bombas del mapa
 	jugar(Mapa,puntos,0);//Imprime mapa
@@ -47,7 +47,7 @@ int main(){
 	t1=clock();//empieza a contar el tiempo
 	do{
 		scanf("%i %i %c",&x,&y,&letra);//EScanea posición (x,y) y letra si es B=poner bandera y A=abrir casilla
-		x--;y--;// se resta uno porque el mapa va de 1 a D, y la matriz va de 0 a D-1
+		x--;y--;// se resta uno porque el mapa va de 1 a d, y la matriz va de 0 a d-1
 		if(banderas_usadas>=bombas&&letra=='B'){//Si usa más banderas que el número de bombas que hay
 			printf("Si quieres usar mas banderas, quita alguna usada\nVuelve a introducir las coordenadas y la letra\n");
 			do{
@@ -66,7 +66,7 @@ int main(){
 		}
 		if(Mapa[x][y]==-1&&letra=='A'){
 			system("cls");
-			imprime_matriz(Mapa);
+			imprime_matriz_busca(Mapa);
 			printf("\n\tHas perdido");
 			break;//Sale del Do-While
 		}
@@ -97,9 +97,7 @@ int main(){
 				i=0;
 				fclose(agregar_archivo);
 				FILE *leer_archivo=fopen("puntuacion_buscaminas.txt","r");
-				while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
-					i++;
-				ordenar_puntuaciones(lista_punt);
+				Puntuaciones(lista_punt,leer_archivo);
 				system("cls");
 				printf("\t   Nombre \t Puntuacion");
 				for(i=0;lista_punt[i].punt!=0&&i<10;i++)
@@ -113,22 +111,22 @@ int main(){
 	printf("\n\tQuieres jugar de nuevo? Pulsa 1: ");
 	if(getch()=='1'){
 		system("cls");
-		goto empezar;
+		goto empezar_bus;
 	}
 	return 0;
 }
 
-void imprime_matriz(int M[D][D]){
+void imprime_matriz_busca(int M[d][d]){
 	int i,j;
 	printf(" \t");
-	for(i=1;i<=D;i++){
+	for(i=1;i<=d;i++){
 		if(i<10)	printf(" ");//Para cuadrar el mapa
 		printf(" %i ",i);
 	}
 	printf("\n\n");
-	for(i=0;i<D;i++){
+	for(i=0;i<d;i++){
 		printf("%i\t",i+1);
-		for(j=0;j<D;j++){
+		for(j=0;j<d;j++){
 			if(M[i][j]==-1)
 				printf("  X ");
 			else
@@ -138,11 +136,11 @@ void imprime_matriz(int M[D][D]){
 	}
 }
 
-int crear_buscaminas(int Mapa[D][D],int nivel){
+int crear_buscaminas(int Mapa[d][d],int nivel){
 	int i,j,random,bombas=0;
 		srand(time(NULL));
-	for(i=0;i<D;i++){//Recorre la matriz y Pone bombas de forma aleatoria en cada casilla,
-		for(j=0;j<D;j++){
+	for(i=0;i<d;i++){//Recorre la matriz y Pone bombas de forma aleatoria en cada casilla,
+		for(j=0;j<d;j++){
 			random = rand() % 10 + 1;
 			if(random<nivel){//Va recorriendo la matriz y generando números random, si son menores que "nivel" pone una bomba(-1) en esa posición
 				Mapa[i][j]=-1;
@@ -150,8 +148,8 @@ int crear_buscaminas(int Mapa[D][D],int nivel){
 			}
 		}
 	}
-	for(i=0;i<D;++i){
-		for(j=0;j<D;j++){
+	for(i=0;i<d;++i){
+		for(j=0;j<d;j++){
 			if(Mapa[i][j]!=-1)//No hay bomba en esa posición
 				Mapa[i][j]=bombas_alrededor(Mapa,i,j);//Entonces pone en ella el número de bombas que hay alrededor
 		}
@@ -159,7 +157,7 @@ int crear_buscaminas(int Mapa[D][D],int nivel){
 	return bombas;
 }
 
-bombas_alrededor(int M[D][D],int x,int y){//suma 1 a la variable bombas si hay una bomba tocando(aunque se por las esquinas) a la posición inicial
+bombas_alrededor(int M[d][d],int x,int y){//suma 1 a la variable bombas si hay una bomba tocando(aunque se por las esquinas) a la posición inicial
 	int bombas=0,i,j;
 	for(i=-1;i<=1;i++)
 		for(j=-1;j<=1;j++)
@@ -167,24 +165,24 @@ bombas_alrededor(int M[D][D],int x,int y){//suma 1 a la variable bombas si hay u
 	return bombas;
 }
 
-int dentro_matriz(int M[D][D],int x,int y){
-	if(x>=0&&x<D&&y>=0&&y<D)// si está dentro de la matriz que devuelva 1, sino que devuelva 0
+int dentro_matriz(int M[d][d],int x,int y){
+	if(x>=0&&x<d&&y>=0&&y<d)// si está dentro de la matriz que devuelva 1, sino que devuelva 0
 		return 1;
 	else 
 		return 0;
 }
 	
-int jugar(int M[D][D],punto puntos[D*D],int num_puntos){
+int jugar(int M[d][d],punto_letra puntos[d*d],int num_puntos){
 	int i,j,n,pintado=0,banderas=0,Pregunta_ganar=1;
 	printf(" \t");
-	for(i=1;i<=D;i++){// pintar números del 1 al D arriba
+	for(i=1;i<=d;i++){// pintar números del 1 al D arriba
 		if(i<10)	printf(" ");//Pone espacio para cuadrar el mapa
 		printf(" %i ",i);
 	}
 	printf("\n\n");
-	for(i=0;i<D;i++){
+	for(i=0;i<d;i++){
 		printf("%i\t",i+1);// pintar los números del 1 al D en el lateral izquierdo
-		for(j=0;j<D;j++){
+		for(j=0;j<d;j++){
 			for(n=0,pintado=0;n<num_puntos;n++){
 				if(i==puntos[n].x&&j==puntos[n].y){//Si este punto fue eligido por el usuario
 					if(puntos[n].letra=='A')	printf("  %i ",M[i][j]);//Si ha eligido A (abrir), muestra el número
@@ -208,7 +206,7 @@ int jugar(int M[D][D],punto puntos[D*D],int num_puntos){
 	return banderas;
 }
 
-void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y){
+void Expandir(int M[d][d],punto_letra pts[d*d],int *num_pts,int x,int y){
 	int i,j;
 	for(i=-1;i<=1;i++)
 		for(j=-1;j<=1;j++)
@@ -219,22 +217,24 @@ void Expandir(int M[D][D],punto pts[D*D],int *num_pts,int x,int y){
 			}
 }
 
-void agregar(punto pts[D*D],int num_pts,int x,int y){
+void agregar(punto_letra pts[d*d],int num_pts,int x,int y){
 	pts[num_pts].x=x;
 	pts[num_pts].y=y;
 	pts[num_pts].letra='A';
 }
 
-int esta_en_vector(punto puntos[D*D],int num_ptos,int x,int y){//devuelve -1 si no está en el vector y si está devuelve el número de la posición
+int esta_en_vector(punto_letra puntos[d*d],int num_ptos,int x,int y){//devuelve -1 si no está en el vector y si está devuelve el número de la posición
 	int i;
 	for(i=0;i<num_ptos;i++)//para comprobar que el punto ya está y solo se le cambia la letra (de A a B, o de B a A)
 		if(puntos[i].x==x&&puntos[i].y==y)
 			return i;
 	return -1;
 }
-void ordenar_puntuaciones(usuario lista_punt[D]){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
-	int i,j;
+	int i=0,j;
+	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
+		i++;
 	for(i=0;lista_punt[i].punt!=0;i++)
 		for(j=i+1;lista_punt[j].punt!=0;j++)
 			if(lista_punt[i].punt<lista_punt[j].punt){
@@ -242,5 +242,9 @@ void ordenar_puntuaciones(usuario lista_punt[D]){//Ordena el vector de usuarios 
 				lista_punt[i]=lista_punt[j];
 				lista_punt[j]=aux;
 			}
+			system("cls");
+		printf("\t   Nombre \t Puntuacion");
+		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
+			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
 }
 

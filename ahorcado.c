@@ -1,11 +1,11 @@
 // AHORCADO
 
 #include <stdio.h>
-#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
 #define E 30
+#define D 20
 typedef struct{
 	char palabra[E];
 }pal;
@@ -17,7 +17,7 @@ void principal(char adivinapalabra[E], char cadena[E]);
 int numaleatorio(int n);
 int ahorcado(char adivinapalabra[E], char cadena[E]);
 int imprime_ahorcado(int intentos);
-void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer);
+void Puntuaciones(usuario lista_punt[D],FILE *leer);
 
 void main(){
 	empezar:
@@ -88,7 +88,7 @@ void principal(char adivinapalabra[30], char cadena[30]){
 	int intentos=7, fallos=0, i, puntuacion,si_perdido;
 	i=0;
 	char nombre[20]="";
-	usuario lista_puntuaciones[E]={{"iniciar",0}};
+	usuario lista_puntuaciones[D]={{"iniciar",0}};
 	FILE *agregar=fopen("puntuacion_ahorcado.txt","a");
 		if(agregar==NULL){
 		printf("\n\t Error");
@@ -108,7 +108,7 @@ void principal(char adivinapalabra[30], char cadena[30]){
 			fprintf(agregar, "%s.%i\n", nombre, puntuacion);
 			fclose(agregar);
 			FILE *leer=fopen("puntuacion_ahorcado.txt","r");
-			ordenar_puntuaciones(lista_puntuaciones, leer);
+			Puntuaciones(lista_puntuaciones, leer);
 			break;
 		}
 		intentos-=fallos;
@@ -208,7 +208,7 @@ int imprime_ahorcado(int intentos){
 	return 0;
 }
 
-void ordenar_puntuaciones(usuario lista_punt[E],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
 	int i=0,j;
 	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)

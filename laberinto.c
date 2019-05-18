@@ -11,14 +11,13 @@ typedef struct{
 	int punt;
 }usuario;
 void avanzar_4_sentidos(int M[N][N],int coord_x,int coord_y,int,int,punto punto_camino[L],int v_x[L],int v_y[L],int contador);
-void imprime_matriz_lab(int M[N][N]);
 int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posici?n est? en los vectores (v_x,v_y)
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]);
-void imprime_matriz_jugar(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
+void imprime_matriz_lab(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
 int jugar_lab(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
 int condiciones(int M[N][N],int,int,int,int);
 void Copiar_vector(int v1[L],int v2[L]);
-void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer);
+void Puntuaciones(usuario lista_punt[D],FILE *leer);
 int main (){
 	empezar_de_nuevo:
 	system("color f0");
@@ -53,16 +52,18 @@ int main (){
 		printf("\n\t Error");
 		return 1;
 	}
-	imprime_matriz_lab(mapa);
 	srand(time(NULL));
-	x_ini=rand()%N-1;
-	y_ini=rand()%2;//Se eligen la posición inicial y la meta de forma aleatoria ( con condiciones)
-	x_fin=rand()%N-1;
-	y_fin=rand()%2+N-3;
-	printf("\n\tTe atreves con el laberinto?");
-	getch();
+	x_ini=rand()%N;
+	y_ini=rand()%3;//Se eligen la posición inicial y la meta de forma aleatoria ( con condiciones)
+	x_fin=rand()%N;
+	y_fin=rand()%3+N-3;
 	mapa[x_ini][y_ini]=1;//Si hay pared(-1) en la posicion inicial o final, la quito 
 	mapa[x_fin][y_fin]=0;
+	imprime_matriz_lab(mapa,x_ini,y_ini,x_fin,y_fin);
+	printf("\tTe atreves con el laberinto?\n\n\tTienes que ir con La O a la M");
+	printf("\n\tIntenta llegar por el camino mas corto:\n\n");
+	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
+	getch();
 	ti=clock();
 	pasos_usuario=jugar_lab(mapa,x_ini,y_ini,x_fin,y_fin);//En esta función juega el usuario y devuelve los pasos que ha hecho
 	tf=clock();
@@ -89,7 +90,7 @@ int main (){
 		if((tf-ti)/CLOCKS_PER_SEC>0.1){//Es decir tiempo entre pasos es al menos de 0.1 segundos
 			ti=clock();
 			system("cls");
-			imprime_matriz_jugar(mapa,v_x[i],v_y[i],x_fin,y_fin);
+			imprime_matriz_lab(mapa,v_x[i],v_y[i],x_fin,y_fin);
 			i++;
 		}
 	}
@@ -109,7 +110,7 @@ int main (){
 		FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
 	//	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
 	//		i++;
-		ordenar_puntuaciones(lista_punt,leer_archivo);
+		Puntuaciones(lista_punt,leer_archivo);
 		fclose(leer_archivo);
 	}
 	
@@ -169,33 +170,6 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punt
 	}
 }
 
-void imprime_matriz_lab(int M[N][N]){
-	int i, j;
-	printf("\t");
-	for(i=1;i<=N;i++){
-		if(i<10)
-			printf(" ");//Se desalineban los n?meros de las columnas al ser de 2 digitos, as? se arregla
-		printf(" %i ",i);
-	}
-	printf("\n\n\n");
-	for(i = 0; i < N; i++) {
-		printf("%i\t",i+1);
-		for(j = 0; j < N; j++){
-			if(M[i][j]==-1)
-				printf("  X ");
-			else{
-				 if(M[i][j]>=0&&M[i][j]<10)
-					printf(" ");//para que los numeros de un digito ocupen lo mismo que los de 2
-					if(M[i][j]==0)
-						printf(" . ");
-					else
-						printf(" %d ", M[i][j]);
-				}
-		}
-		printf("\n");
-	}
-}
-
 int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta_x){//Resta las coord de una posición con la anterior (Del camino más corto)
 	int i,resta_y=0;
 	*resta_x=0;
@@ -236,9 +210,7 @@ void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 
 int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 	system("cls");
-	printf("\n\tIntenta llegar por el camino mas corto:\n\n");
-	printf("\tw=arriba\n\td=derecha\n\ts=abajo\n\ta=izquierda\n");
-	imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+	imprime_matriz_lab(mapa,xi,yi,xf,yf);
 	int pasos=0;
 	while(xi!=xf||yi!=yf){//Mientras no se alcanzo la meta
 		switch(getch()){//Avanzar
@@ -247,7 +219,7 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 				if(mapa[xi-1][yi]!=-1&&xi-1>=0){//Si no hay menos uno en esa posici?n (pared) y que no se salga de la matriz
 					xi--;//se mueve hacía la arriba si se cumplen las condiciones
 					system("cls");
-					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					imprime_matriz_lab(mapa,xi,yi,xf,yf);
 					pasos++;//Aumenta número depasos
 				}
 				break;
@@ -256,7 +228,7 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 				if(mapa[xi+1][yi]!=-1&&xi+1<=N-1){//Las mismas condiciones que el if de antes
 					xi++;
 					system("cls");
-					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					imprime_matriz_lab(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
 				break;
@@ -265,7 +237,7 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 				if(mapa[xi][yi+1]!=-1&&yi+1<=N-1){//Igual
 					yi++;
 					system("cls");
-					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					imprime_matriz_lab(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
 				break;
@@ -274,7 +246,7 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 				if(mapa[xi][yi-1]!=-1&&yi-1>=0){//Igual
 					yi--;
 					system("cls");
-					imprime_matriz_jugar(mapa,xi,yi,xf,yf);
+					imprime_matriz_lab(mapa,xi,yi,xf,yf);
 					pasos++;
 				}
 				break;
@@ -285,7 +257,7 @@ int jugar_lab(int mapa[N][N],int xi,int yi,int xf,int yf){
 	return pasos;
 }
 
-void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) posición actual (O) y (xf,yf) meta (M)
+void imprime_matriz_lab(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) posición actual (O) y (xf,yf) meta (M)
 	int i, j;
 	printf("\n");
 	for(i = 0; i < N; i++) {
@@ -302,7 +274,7 @@ void imprime_matriz_jugar(int M[N][N],int xi,int yi,int xf,int yf){//(xi,yi) pos
 		printf("\n");
 	}
 }
-void ordenar_puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
+void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector de usuarios de mayor (en la posición 0) a menor
 	usuario aux;
 	int i=0,j;
 	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
