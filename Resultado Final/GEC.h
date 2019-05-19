@@ -95,7 +95,7 @@ void Laberinto(){
 	tf=clock();
 	time_usuario=(tf-ti)/(double)CLOCKS_PER_SEC;
 	system("cls");
-	printf("\n\tHas tardado %f segundos y lo has hecho en %i pasos",time_usuario,pasos_usuario);
+	printf("\n\tHas tardado %0.2f segundos y lo has hecho en %i pasos",time_usuario,pasos_usuario);
 	printf("\n\n\tLa verdad pensaba que no lo ibas a lograr\n\n");
 	getch();	
 	printf("\tBueno, Ahora me toca a mi, que los humanos sois muy lentos para estas cosas");
@@ -125,7 +125,7 @@ void Laberinto(){
 	Puntuacion=1000000/((pasos_usuario+1-pasos_maquina)*((int)time_usuario+1));//Fórmula para calcular la puntuación
 	if(pasos_usuario==pasos_maquina)
 		Puntuacion+=50000;////Bonus si se sigue el camino más corto
-	printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partdia pulsa 1: ",Puntuacion);
+	printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partida pulsa 1: ",Puntuacion);
 	if(getch()=='1'){
 		printf("\n\n\tPon Nickname: ");
 		scanf(" %[^\n]",Nickname);
@@ -325,7 +325,7 @@ void Ahorcado(){
 	pal musica[10]={"BOHEMIAN RHAPSODY" , "THRILLER" , "BOYS DONT CRY" , "WITH OR WITHOUT YOU" , "PURPURINA" , "LET IT BE" , "HEY BROTHER" , "VIVA LA VIDA" , "PAQUITO EL CHOCOLATERO" , "RAP GOD"};
 	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "JUANFRAN AL PALO" , "EL BICHO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "PRESS BANCA"};
 	char letra;
-	char letrausuario[E]=" ";
+	char letrausuario[E]="";
 
 /*	printf("Bienvenido al Ahorcado\n");
 	system ("PAUSE");
@@ -333,7 +333,7 @@ void Ahorcado(){
 	printf("En este juego el objetivo es adivinar la frase o palabra con el minimo numero de fallos\n");
 	system("PAUSE"); 
 	system("CLS");*/
-	printf("Selecciona la categoria de la frase:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
+	printf("Selecciona una categoria:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
 		switch(getch()){
 			case 'a':
 			case 'A':
@@ -407,7 +407,10 @@ void principal(char adivinapalabra[30], char cadena[30]){
 		intentos-=fallos;
 		printf("\n\n");
 		si_perdido=imprime_ahorcado(intentos);
-		if(si_perdido==1) break;
+		if(si_perdido==1){
+			printf("\n Era %s.",adivinapalabra);
+			break;
+		}
 		printf("\nLas letras introducidas que llevas son: %s\n", cadena);
 		printf("Introduce una letra:\n");
 		cadena[i]=getch();
@@ -425,11 +428,11 @@ int i;
 
 int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 	
-	int i, n,Pregunta_fallo, iguales, ganado=1, dif='A'-'a',ultima_letra_usuario=strlen(letrausuario);
+	int i, n,Pregunta_fallo=0, iguales, ganado=1, dif='A'-'a';
 	
 	for(i=0; adivinapalabra[i]!='\0'; i++){
-		
-		for(n=0, iguales=0; n<ultima_letra_usuario; n++){
+	
+		for(n=0, iguales=0; n<strlen(letrausuario); n++){
 			if(letrausuario[n]==adivinapalabra[i] || letrausuario[n]==adivinapalabra[i]-dif){
 				iguales = 1;
 			}
@@ -456,47 +459,42 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		//printf("\nHAS GANADO!!");
 		return -1;
 	}
-	if(strlen(adivinapalabra)!=1)//Para que no empiece a comprobar si hay algún fallo antes de que el vector tenga contenido
+	if(strlen(letrausuario)>1)//Para que no empiece a comprobar si hay algún fallo antes de que el vector tenga contenido
 		for(i=0,Pregunta_fallo=1;adivinapalabra[i]!='\0';i++)
-			if(letrausuario[ultima_letra_usuario-1]==adivinapalabra[i] || letrausuario[ultima_letra_usuario-1]==adivinapalabra[i]-dif)
+			if(letrausuario[strlen(letrausuario)-1]==adivinapalabra[i] || letrausuario[strlen(letrausuario)-1]==adivinapalabra[i]-dif)
 				Pregunta_fallo=0;
-		
+	
 	return Pregunta_fallo;
 }
 int imprime_ahorcado(int intentos){
-	if(intentos==7){
+	
 	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|\n|\n|\n|\n|\n|__\n");	
+	if(intentos==7){
+		printf(" _______\n/        |\n|\n|\n|\n|\n|\n|__\n");	
 	}
 	if(intentos==6){
-	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|\n|\n|\n|\n|__\n");	
+		printf(" _______\n/        |\n|      (x_x)\n|\n|\n|\n|\n|__\n");	
 	}
 	if(intentos==5){
-	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|        |\n|\n|\n|\n|__\n");
+		printf(" _______\n/        |\n|      (x_x)\n|        |\n|\n|\n|\n|__\n");
 	}
 	if(intentos==4){
-	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|       _| \n|       \n|\n|\n|__\n");
+		printf(" _______\n/        |\n|      (x_x)\n|       _| \n|       \n|\n|\n|__\n");
 	}																			
 	if(intentos==3){																				 
-	printf("Te quedan %d intentos\n\n", intentos);					 
-				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|       \n|\n|\n|__\n");
-			}
+		printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|       \n|\n|\n|__\n");
+	}
 				
 	if(intentos==2){
-	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        |\n|\n|\n|__\n");
+		printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        |\n|\n|\n|__\n");
 	}
 	if(intentos==1){
-	printf("Te quedan %d intentos\n\n", intentos);
-				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       |  \n|\n|__\n");
+		printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       |  \n|\n|__\n");
 	}
 	if(intentos==0){
-				printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
-	printf("HAS PERDIDO :(\n");	
-	return 1;
+		printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
+		printf("HAS PERDIDO :(\n");	
+		return 1;
 	}
 	return 0;
 }
