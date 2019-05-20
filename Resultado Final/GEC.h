@@ -308,32 +308,34 @@ void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector d
 		for(i=0;lista_punt[i].punt!=0&&i<10;i++)
 			printf("\n\t%i- %s \t %i",i+1,lista_punt[i].nombre,lista_punt[i].punt);
 }
-////////////Ahoracdo//////////////
+////////////Ahorcado//////////////
 void Ahorcado(){
-	empezar:
-	system("COLOR 2F");
+	
+	system("COLOR F2");//escojo el color 
 	int aleatorio=0;
 	pal peliculas[10]={"AVENGERS ENDGAME" , "TRANSFORMERS" , "HARRY POTTER" , "TITANIC" , "EL SENOR DE LOS ANILLOS" , "STAR WARS" , "GLADIADOR" , "JURASSIC PARK" , "EL CABALLERO OSCURO" , "TOY STORY"};
 	pal series[10]={"JUEGO DE TRONOS" , "STRANGER THINGS" , "WESTWORLD" , "FRIENDS" , "COMO CONOCI A VUESTRA MADRE" , "LA QUE SE AVECINA" , "LA CASA DE PAPEL" , "PEAKY BLINDERS" , "EL PRINCIPE DE BEL AIR" , "THE BIG BANG THEORY"};
 	pal musica[10]={"BOHEMIAN RHAPSODY" , "THRILLER" , "BOYS DONT CRY" , "WITH OR WITHOUT YOU" , "PURPURINA" , "LET IT BE" , "HEY BROTHER" , "VIVA LA VIDA" , "PAQUITO EL CHOCOLATERO" , "RAP GOD"};
-	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "JUANFRAN AL PALO" , "EL BICHO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "PRESS BANCA"};
+	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "PIMPON" , "CRISTIANO RONALDO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "RAFAEL NADAL"};
 	char letra;
-	char letrausuario[E]="";
+	
 
-/*	printf("Bienvenido al Ahorcado\n");
-	system ("PAUSE");
+	printf("Bienvenido al Ahorcado\n");
+	getch();
 	system("CLS");
 	printf("En este juego el objetivo es adivinar la frase o palabra con el minimo numero de fallos\n");
-	system("PAUSE"); 
-	system("CLS");*/
+	getch(); 
+	system("CLS");
+	empezar:
+	char letrausuario[E]="";
 	printf("Selecciona una categoria:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
-		switch(getch()){
+		switch(getch()){//switch que utilizo para elegir la categoría
 			case 'a':
 			case 'A':
 				system("CLS");
 				printf("Has elegido la categoria de Peliculas\n");
-				aleatorio = numaleatorio(10);
-				principal(peliculas[aleatorio].palabra, letrausuario);
+				aleatorio = numaleatorio(10);//funcion que genera un numero aleatorio comprendido entre el 0 y el 9, para poder elegir una frase dentro de la estructura
+				principal(peliculas[aleatorio].palabra, letrausuario);//funcion principal del ahorcado donde te lleva a todas las funciones del ahorcado
 				break;
 				
 			case 'b':
@@ -360,51 +362,51 @@ void Ahorcado(){
 				principal(deportes[aleatorio].palabra, letrausuario);
 				break;
 				
-			default:
+			default://si no pusa ninguna opción válida el usuario, le sale este mensaje
 			printf("Escoge una opcion valida\n");
 			system("PAUSE");		
 		}
 		printf("\n Quieres jugar de nuevo? Pulsa 1:");
 		if(getch()=='1') {
 			system("cls");
-		goto empezar;
+		goto empezar;//si al terminar el usuario quiere seguir jugando, pulsa 1 ty le redirije donde pone 'empezar:'
 	}
 }
-void principal(char adivinapalabra[30], char cadena[30]){
+void principal(char adivinapalabra[30], char cadena[30]){//obtenemos la frase con el char dentro de las 40 posibles
 	int intentos=7, fallos=0, i, puntuacion,si_perdido;
 	i=0;
 	char nombre[20]="";
-	usuario lista_puntuaciones[D]={{"iniciar",0}};
-	FILE *agregar=fopen("puntuacion_ahorcado.txt","a");
+	usuario lista_puntuaciones[D]={{"iniciar",0}};//función de las puntuaciones
+	FILE *agregar=fopen("puntuacion_ahorcado.txt","a");//abrimos el fichero donde están almacenadas las puntuaciones anteriores del ahorcado
 		if(agregar==NULL){
-		printf("\n\t Error");
+		printf("\n\t Error");//si no consigue abrir el fichero le saldrá este mensaje
 		exit(1);
 	}
 	float t1=clock(), t2, tiempo_total;
 	while(1){
-		fallos=ahorcado(adivinapalabra, cadena);
+		fallos=ahorcado(adivinapalabra, cadena);//funcion que comprueba si las letras introducidas son correctas o no, y que devuelve el número de fallos
 		if(fallos==-1){
 			printf("\nHAS GANADO!!\n");
 			t2=clock();
-			tiempo_total = (t2-t1)/CLOCKS_PER_SEC;
-			puntuacion=1000000/(int)tiempo_total*intentos;
+			tiempo_total = (t2-t1)/CLOCKS_PER_SEC;//t1 inicia el cronómetro y t2 lo terina, tiempo_total calcula la diferencia
+			puntuacion=1000000/(int)tiempo_total*intentos;//puntuación que obtenemos según el número de fallos y el tiempo total
 			printf("Has tardado %0.2f\nTu puntuacion ha sido de %i\n", tiempo_total, puntuacion);
 			printf("Pon Nickname:\n");
 			scanf(" %[^\n]", nombre);
-			fprintf(agregar, "%s.%i\n", nombre, puntuacion);
+			fprintf(agregar, "%s.%i\n", nombre, puntuacion);//imprimimos en el fichero el nombre con la puntuación correspondiente
 			fclose(agregar);
-			FILE *leer=fopen("puntuacion_ahorcado.txt","r");
-			Puntuaciones(lista_puntuaciones, leer);
+			FILE *leer=fopen("puntuacion_ahorcado.txt","r");//abrimos el archivo en modo lectura para comprobar las mejores puntuaciones anteriores y si la tuya se encuentra entre las mejores
+			Puntuaciones(lista_puntuaciones, leer);//función que imprime las puntuaciones
 			break;
 		}
-		intentos-=fallos;
+		intentos-=fallos; //si aumenta el numero de fallos, disminuye el número de intentos
 		printf("\n\n");
 		si_perdido=imprime_ahorcado(intentos);
-		if(si_perdido==1){
+		if(si_perdido==1){ //si el indicador es si_perdido te sale 1, es decir que no ha entrado e ninguna condición donde cambie, imprime lo siguiente
 			printf("\n Era %s.",adivinapalabra);
 			break;
 		}
-		printf("\n Las letras introducidas que llevas son: %s\n", cadena);
+		printf("\n Las letras introducidas que llevas son: %s\n", cadena);//cadena es la cadena de caracteres con las letras que llevas introducidas
 		printf(" Introduce una letra:\n");
 		cadena[i]=getch();
 		system("CLS");				
@@ -412,14 +414,14 @@ void principal(char adivinapalabra[30], char cadena[30]){
 	}
 }
 
-int numaleatorio(int n){
+int numaleatorio(int n){//función que genera número aleatorio
 srand(time(NULL));
 int i;
 	i = rand()%n;
 	return i;
 }
 
-int ahorcado(char adivinapalabra[30], char letrausuario[30]){
+int ahorcado(char adivinapalabra[30], char letrausuario[30]){//función que comprueba e imprime en pantalla la frase si la vas acertando
 	
 	int i, n,Pregunta_fallo=0, iguales, ganado=1, dif='A'-'a';
 	
@@ -459,7 +461,7 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 	
 	return Pregunta_fallo;
 }
-int imprime_ahorcado(int intentos){
+int imprime_ahorcado(int intentos){//función que imprime el clásico muñeco del ahorcado
 	
 	printf(" Te quedan %d intentos\n\n", intentos);
 	if(intentos==7){
