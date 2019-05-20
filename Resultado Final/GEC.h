@@ -109,7 +109,7 @@ void Laberinto(){
 	printf("\n\tEl camino mas corto es de %i pasos\n",pasos_maquina);	
 	printf("\n\tEste es el camino seguido\n\n");
 	i=0;
-	ti=clock();
+	ti=clock();//Esta parte hace que la maquina resuelva el laberinto moviendo la O
 	while(v_x[i-1]!=x_fin||v_y[i-1]!=y_fin){//Mientras no se llegá a la meta
 		tf=clock();
 		if((tf-ti)/CLOCKS_PER_SEC>0.2){//Es decir tiempo entre pasos es al menos de 0.2 segundos
@@ -125,26 +125,19 @@ void Laberinto(){
 	Puntuacion=1000000/((pasos_usuario+1-pasos_maquina)*((int)time_usuario+1));//Fórmula para calcular la puntuación
 	if(pasos_usuario==pasos_maquina)
 		Puntuacion+=50000;////Bonus si se sigue el camino más corto
-	printf("\n\n\tTU PUNTUACION ES %i\n\n\tPara guardar partida pulsa 1: ",Puntuacion);
-	if(getch()=='1'){
-		printf("\n\n\tPon Nickname: ");
-		scanf(" %[^\n]",Nickname);
-		fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);//Se guarda la puntuacion
-		i=0;
-		fclose(agregar_archivo);//Se cierra y se abre en modo lectura, ya que de esta forma leerá la puntuación que acaba de leer el usuario
-		FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
-	//	while(fscanf(leer_archivo,"%[^.].%i\n",lista_punt[i].nombre,&lista_punt[i].punt)!=EOF)
-	//		i++;
-		Puntuaciones(lista_punt,leer_archivo);
-		fclose(leer_archivo);
-	}
-	
+	printf("\n\n\tTU PUNTUACION ES %i",Puntuacion);
+	printf("\n\n\tPon Nickname: ");
+	scanf(" %[^\n]",Nickname);
+	fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);//Se guarda la puntuacion
+	fclose(agregar_archivo);//Se cierra y se abre en modo lectura, ya que de esta forma leerá la puntuación que acaba de hacer el usuario
+	FILE *leer_archivo=fopen("puntuacion_laberinto.txt","r");
+	Puntuaciones(lista_punt,leer_archivo);
+	fclose(leer_archivo);
 	printf("\n\n\tQuieres seguir jugado? Pulsa 1:");
 	if(getch()=='1'){
 		system("cls");
 		goto empezar_de_nuevo;
 	}
-	printf("\n\n\tHasta la proxima");
 }
 int condiciones(int M[N][N],int xi,int yi,int xf,int yf){//Para que devuelva 1 no tiene que haber pared(-1) en la posici?n a la que se mueve y no se sale de las dimensiones de la matriz
 	if(xf>=0&&xf<N&&yf<N&&yf>=0&&M[xf][yf]!=-1 && (M[xf][yf]==0 || M[xi][yi]+1<M[xf][yf]))//Y tambi?n en la posici?n en la que se va a avanzar tiene que haber un cero o que se va a mejorar al menos por uno al n?mero que ya hay all?
@@ -395,7 +388,7 @@ void principal(char adivinapalabra[30], char cadena[30]){
 			t2=clock();
 			tiempo_total = (t2-t1)/CLOCKS_PER_SEC;
 			puntuacion=1000000/(int)tiempo_total*intentos;
-			printf("Has tardado %f\nTu puntuacion ha sido de %i\n", tiempo_total, puntuacion);
+			printf("Has tardado %0.2f\nTu puntuacion ha sido de %i\n", tiempo_total, puntuacion);
 			printf("Pon Nickname:\n");
 			scanf(" %[^\n]", nombre);
 			fprintf(agregar, "%s.%i\n", nombre, puntuacion);
@@ -411,8 +404,8 @@ void principal(char adivinapalabra[30], char cadena[30]){
 			printf("\n Era %s.",adivinapalabra);
 			break;
 		}
-		printf("\nLas letras introducidas que llevas son: %s\n", cadena);
-		printf("Introduce una letra:\n");
+		printf("\n Las letras introducidas que llevas son: %s\n", cadena);
+		printf(" Introduce una letra:\n");
 		cadena[i]=getch();
 		system("CLS");				
 		i++;					
@@ -459,7 +452,7 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 		//printf("\nHAS GANADO!!");
 		return -1;
 	}
-	if(strlen(letrausuario)>1)//Para que no empiece a comprobar si hay algún fallo antes de que el vector tenga contenido
+	if(strlen(letrausuario)>=1)//Para que no empiece a comprobar si hay algún fallo antes de que el vector tenga contenido
 		for(i=0,Pregunta_fallo=1;adivinapalabra[i]!='\0';i++)
 			if(letrausuario[strlen(letrausuario)-1]==adivinapalabra[i] || letrausuario[strlen(letrausuario)-1]==adivinapalabra[i]-dif)
 				Pregunta_fallo=0;
@@ -468,7 +461,7 @@ int ahorcado(char adivinapalabra[30], char letrausuario[30]){
 }
 int imprime_ahorcado(int intentos){
 	
-	printf("Te quedan %d intentos\n\n", intentos);
+	printf(" Te quedan %d intentos\n\n", intentos);
 	if(intentos==7){
 		printf(" _______\n/        |\n|\n|\n|\n|\n|\n|__\n");	
 	}
@@ -493,7 +486,7 @@ int imprime_ahorcado(int intentos){
 	}
 	if(intentos==0){
 		printf(" _______\n/        |\n|      (x_x)\n|       _|_ \n|        | \n|       | |\n|\n|__\n");
-		printf("HAS PERDIDO :(\n");	
+		printf(" HAS PERDIDO :(\n");	
 		return 1;
 	}
 	return 0;
