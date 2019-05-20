@@ -126,7 +126,7 @@ void Laberinto(){
 	if(pasos_usuario==pasos_maquina)
 		Puntuacion+=50000;////Bonus si se sigue el camino más corto
 	printf("\n\n\tTU PUNTUACION ES %i",Puntuacion);
-	printf("\n\n\tPon Nickname: ");
+	printf("\n\n\tPon Nickname (minimo 4 letras): ");
 	scanf(" %[^\n]",Nickname);
 	fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);//Se guarda la puntuacion
 	fclose(agregar_archivo);//Se cierra y se abre en modo lectura, ya que de esta forma leerá la puntuación que acaba de hacer el usuario
@@ -310,7 +310,14 @@ void Puntuaciones(usuario lista_punt[D],FILE *leer_archivo){//Ordena el vector d
 }
 ////////////Ahorcado//////////////
 void Ahorcado(){
-	
+	system("COLOR F2");//escojo el color 
+	printf("Bienvenido al Ahorcado\n");
+	getch();
+	system("CLS");
+	printf("En este juego el objetivo es adivinar la frase o palabra con el minimo numero de fallos y en el menor tiempo\n");
+	getch(); 
+	system("CLS");
+	empezar:
 	system("COLOR F2");//escojo el color 
 	int aleatorio=0;
 	pal peliculas[10]={"AVENGERS ENDGAME" , "TRANSFORMERS" , "HARRY POTTER" , "TITANIC" , "EL SENOR DE LOS ANILLOS" , "STAR WARS" , "GLADIADOR" , "JURASSIC PARK" , "EL CABALLERO OSCURO" , "TOY STORY"};
@@ -319,14 +326,6 @@ void Ahorcado(){
 	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "PIMPON" , "CRISTIANO RONALDO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "RAFAEL NADAL"};
 	char letra;
 	char letrausuario[E]="";
-
-	printf("Bienvenido al Ahorcado\n");
-	getch();
-	system("CLS");
-	printf("En este juego el objetivo es adivinar la frase o palabra con el minimo numero de fallos\n");
-	getch(); 
-	system("CLS");
-	empezar:
 
 	printf("Selecciona una categoria:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
 		switch(getch()){//switch que utilizo para elegir la categoría
@@ -391,7 +390,7 @@ void principal(char adivinapalabra[30], char cadena[30]){//obtenemos la frase co
 			tiempo_total = (t2-t1)/CLOCKS_PER_SEC;//t1 inicia el cronómetro y t2 lo terina, tiempo_total calcula la diferencia
 			puntuacion=1000000/(int)tiempo_total*intentos;//puntuación que obtenemos según el número de fallos y el tiempo total
 			printf("Has tardado %0.2f\nTu puntuacion ha sido de %i\n", tiempo_total, puntuacion);
-			printf("Pon Nickname:\n");
+			printf("Pon Nickname (minimo 4 letras):\n");
 			scanf(" %[^\n]", nombre);
 			fprintf(agregar, "%s.%i\n", nombre, puntuacion);//imprimimos en el fichero el nombre con la puntuación correspondiente
 			fclose(agregar);
@@ -565,7 +564,7 @@ void Buscaminas(){
 				printf("\n\n\tHAS GANADO y has tardado %i minutos y %i segundos",(int)tiempo/60,(int)tiempo%60);//pone el tiempo en formato minutos y segundos (No se puede hacer en menos de un minuto)
 				Puntuacion=nivel*1000000/(int)tiempo;;
 				printf("\n\n\tTu puntuacion es %i",Puntuacion);
-				printf("\n\tPon Nombre: ");
+				printf("\n\tPon Nickname (minimo 4 letras): ");
 				scanf(" %[^\n]",Nickname);
 				fprintf(agregar_archivo,"%s.%i\n",Nickname,Puntuacion);
 				i=0;
