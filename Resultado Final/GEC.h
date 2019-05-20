@@ -318,7 +318,7 @@ void Ahorcado(){
 	pal musica[10]={"BOHEMIAN RHAPSODY" , "THRILLER" , "BOYS DONT CRY" , "WITH OR WITHOUT YOU" , "PURPURINA" , "LET IT BE" , "HEY BROTHER" , "VIVA LA VIDA" , "PAQUITO EL CHOCOLATERO" , "RAP GOD"};
 	pal deportes[10]={"MICHAEL JORDAN" , "REAL MADRID" , "PADEL" , "PIMPON" , "CRISTIANO RONALDO" , "MOHAMED ALI" , "CICLISMO" , "ESCALADA" , "RUGBY" , "RAFAEL NADAL"};
 	char letra;
-	
+	char letrausuario[E]="";
 
 	printf("Bienvenido al Ahorcado\n");
 	getch();
@@ -327,7 +327,7 @@ void Ahorcado(){
 	getch(); 
 	system("CLS");
 	empezar:
-	char letrausuario[E]="";
+
 	printf("Selecciona una categoria:\na.Peliculas\nb.Series\nc.Musica\nd.Deportes\n");
 		switch(getch()){//switch que utilizo para elegir la categoría
 			case 'a':
