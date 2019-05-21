@@ -23,7 +23,7 @@ typedef struct{//Estructura con coordenadas del punto y a cada punto va asociada
 }punto_letra;
 ////LAB//////
 void avanzar_4_sentidos(int M[N][N],int coord_x,int coord_y,int,int,punto punto_camino[L],int v_x[L],int v_y[L],int contador);
-int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posici?n est? en los vectores (v_x,v_y)
+int Resta(int v_x[L],int v_y[L],int x,int y,int *resta);//Comprueba si una posici?n est? en los vectores (v_x,v_y)
 void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]);
 void imprime_matriz_lab(int M[N][N],int,int,int,int);//imprime matriz con O en la posicion x,y
 int jugar_lab(int M[N][N],int,int,int,int);//controla como va a jugar el usuario
@@ -47,7 +47,7 @@ int esta_en_vector(punto_letra puntos[d*d],int num_ptos,int x,int y);//Comprueba
 //////LAB////////////
 void Laberinto(){
 	empezar_de_nuevo:
-	system("color B5");
+	system("color fd");
 	punto puntos_camino[L];
 	int x_fin,y_fin,x_ini,y_ini,i,pasos_usuario=0,pasos_maquina,v_x[L]={0},v_y[L]={0},j,Puntuacion,mapa[N][N]={
 	{ 0, 0, 0,-1,-1,-1,-1, 0, 0, 0,-1,-1,-1,-1, 0, 0,-1, 0, 0, 0},
@@ -186,7 +186,7 @@ void avanzar_4_sentidos(int M[N][N],int x,int y,int x_inicial,int y_inicial,punt
 	}
 }
 
-int Pregunta(int v_x[L],int v_y[L],int x,int y,int *resta_x){//Resta las coord de una posición con la anterior (Del camino más corto)
+int Resta(int v_x[L],int v_y[L],int x,int y,int *resta_x){//Resta las coord de una posición con la anterior (Del camino más corto)
 	int i,resta_y=0;
 	*resta_x=0;
 	for(i=0;i<L;i++){
@@ -204,7 +204,7 @@ void imprime_matriz_con_flechas(int M[N][N],int v_x[L],int v_y[L]){
 		printf("\t");
 		for(j=0;j<N;j++){
 			if(i!=0||j!=0)
-				resta_fila=Pregunta(v_x,v_y,i,j,&resta_columna);
+				resta_fila=Resta(v_x,v_y,i,j,&resta_columna);
 			if(M[i][j]==-1)//Si hay -1 en esta posicion que dibuje una X
 				printf("  . ");
 			else if(i==v_x[0]&&j==v_y[0])//Posición inicial
@@ -318,7 +318,7 @@ void Ahorcado(){
 	getch(); 
 	system("CLS");
 	empezar:
-	system("COLOR F2");//escojo el color 
+	system("COLOR F2");//EL programa falla al quitar este system
 	int aleatorio=0;
 	pal peliculas[10]={"AVENGERS ENDGAME" , "TRANSFORMERS" , "HARRY POTTER" , "TITANIC" , "EL SENOR DE LOS ANILLOS" , "STAR WARS" , "GLADIADOR" , "JURASSIC PARK" , "EL CABALLERO OSCURO" , "TOY STORY"};
 	pal series[10]={"JUEGO DE TRONOS" , "STRANGER THINGS" , "WESTWORLD" , "FRIENDS" , "COMO CONOCI A VUESTRA MADRE" , "LA QUE SE AVECINA" , "LA CASA DE PAPEL" , "PEAKY BLINDERS" , "EL PRINCIPE DE BEL AIR" , "THE BIG BANG THEORY"};
@@ -683,7 +683,7 @@ void Expandir(int M[d][d],punto_letra pts[d*d],int *num_pts,int x,int y){
 		for(j=-1;j<=1;j++)
 			if(dentro_matriz(M,x+i,y+j)&&esta_en_vector(pts,*num_pts,x+i,y+j)==-1){//La última condición es para que no vuelva a agregar un el punto inicial
 				agregar(pts,*num_pts,x+i,y+j);
-				*num_pts+=1;//num_ptos es el número de puntso guardados en el vector puntos
+				*num_pts+=1;//num_ptos es el número de puntos guardados en el vector puntos
 				if(M[x+i][y+j]==0)	Expandir(M,pts,num_pts,x+i,y+j);//Se sigue expandiendo si hay un cero en esa posición
 			}
 }
