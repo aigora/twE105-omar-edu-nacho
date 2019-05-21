@@ -1,7 +1,7 @@
 # Gaming Entertainment Center (GEC)
 
 
-Nuestro proyecto se basa en una videoconsola con algunos juegos clásicos como: Buscaminas, Hundir la Flota, Ahorcado, Tres En Raya.
+Nuestro proyecto se basa en una videoconsola con algunos juegos clásicos como: Buscaminas, Laberinto y Ahorcado.
 Desarrollaremos varios juegos para nuestra consola.
 Crearemos un menú donde se podrán seleccionar cada uno de estos juegos.
 
